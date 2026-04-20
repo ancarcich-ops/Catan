@@ -1,820 +1,1710 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Settlers of Catan — League Tracker</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
-<style>
-:root {
-  --ocean:    #071220;
-  --ocean2:   #0c1e35;
-  --parch:    #1e1305;
-  --parch2:   #271a08;
-  --parch3:   #2e2010;
-  --gold:     #c9922a;
-  --gold2:    #e8b84b;
-  --gold3:    #f5d87a;
-  --cream:    #f0e2b6;
-  --cream2:   #d4c08a;
-  --text1:    #f5e9c8;
-  --text2:    #c4a96a;
-  --text3:    #7a6040;
-  --border:   rgba(201,146,42,0.25);
-  --border2:  rgba(201,146,42,0.5);
-  --wheat:    #e8b94b;
-  --brick:    #c44a2a;
-  --wood:     #4a8a3a;
-  --ore:      #7a8a9a;
-  --sheep:    #8ac44a;
-  --desert:   #c4a240;
-  --glow:     rgba(201,146,42,0.15);
-  --fi-grad:  linear-gradient(135deg, #e53935 0%, #ff7043 20%, #43a047 40%, #42a5f5 60%, #a1887f 80%, #bdbdbd 100%);
-}
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Settlers of Catan — League Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ocean: #071220;
+        --ocean2: #0c1e35;
+        --parch: #1e1305;
+        --parch2: #271a08;
+        --parch3: #2e2010;
+        --gold: #c9922a;
+        --gold2: #e8b84b;
+        --gold3: #f5d87a;
+        --cream: #f0e2b6;
+        --cream2: #d4c08a;
+        --text1: #f5e9c8;
+        --text2: #c4a96a;
+        --text3: #7a6040;
+        --border: rgba(201, 146, 42, 0.25);
+        --border2: rgba(201, 146, 42, 0.5);
+        --wheat: #e8b94b;
+        --brick: #c44a2a;
+        --wood: #4a8a3a;
+        --ore: #7a8a9a;
+        --sheep: #8ac44a;
+        --desert: #c4a240;
+        --glow: rgba(201, 146, 42, 0.15);
+        --fi-grad: linear-gradient(
+          135deg,
+          #e53935 0%,
+          #ff7043 20%,
+          #43a047 40%,
+          #42a5f5 60%,
+          #a1887f 80%,
+          #bdbdbd 100%
+        );
+      }
 
-*{margin:0;padding:0;box-sizing:border-box}
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-html,body{
-  min-height:100vh;
-  background:#071220;
-  color:var(--text1);
-  font-family:'Lora',Georgia,serif;
-}
+      html,
+      body {
+        min-height: 100vh;
+        background: #071220;
+        color: var(--text1);
+        font-family: "Lora", Georgia, serif;
+      }
 
-/* ─── HEX BACKGROUND ─── */
-body::before {
-  content:'';
-  position:fixed;
-  inset:0;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='70'%3E%3Cpolygon points='30,2 57,17 57,52 30,67 3,52 3,17' fill='none' stroke='%23132840' stroke-width='1'/%3E%3C/svg%3E");
-  background-size:60px 70px;
-  opacity:0.6;
-  pointer-events:none;
-  z-index:0;
-}
+      /* ─── HEX BACKGROUND ─── */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='70'%3E%3Cpolygon points='30,2 57,17 57,52 30,67 3,52 3,17' fill='none' stroke='%23132840' stroke-width='1'/%3E%3C/svg%3E");
+        background-size: 60px 70px;
+        opacity: 0.6;
+        pointer-events: none;
+        z-index: 0;
+      }
 
-body::after {
-  content:'';
-  position:fixed;
-  inset:0;
-  background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(201,146,42,0.06) 0%, transparent 70%),
-              radial-gradient(ellipse 60% 40% at 80% 100%, rgba(12,30,53,0.8) 0%, transparent 60%);
-  pointer-events:none;
-  z-index:0;
-}
+      body::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background:
+          radial-gradient(
+            ellipse 80% 60% at 50% 0%,
+            rgba(201, 146, 42, 0.06) 0%,
+            transparent 70%
+          ),
+          radial-gradient(
+            ellipse 60% 40% at 80% 100%,
+            rgba(12, 30, 53, 0.8) 0%,
+            transparent 60%
+          );
+        pointer-events: none;
+        z-index: 0;
+      }
 
-.wrap{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:0 16px 60px;}
+      .wrap {
+        position: relative;
+        z-index: 1;
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 0 16px 60px;
+      }
 
-/* ─── HEADER ─── */
-header {
-  text-align:center;
-  padding:36px 0 24px;
-  position:relative;
-}
-.header-eyebrow {
-  font-family:'Cinzel',serif;
-  font-size:.65rem;
-  letter-spacing:.35em;
-  color:var(--text3);
-  text-transform:uppercase;
-  margin-bottom:8px;
-}
-.header-title {
-  font-family:'Cinzel Decorative',serif;
-  font-size:clamp(1.6rem,6vw,3rem);
-  font-weight:900;
-  color:var(--gold2);
-  text-shadow:0 0 40px rgba(201,146,42,0.5), 0 2px 0 rgba(0,0,0,0.8);
-  letter-spacing:.04em;
-  line-height:1.1;
-}
-.header-sub {
-  font-family:'Cinzel',serif;
-  font-size:.75rem;
-  color:var(--text3);
-  letter-spacing:.2em;
-  margin-top:8px;
-  text-transform:uppercase;
-}
-.header-divider {
-  display:flex;
-  align-items:center;
-  gap:12px;
-  margin:16px auto 0;
-  max-width:500px;
-}
-.header-divider::before,.header-divider::after{
-  content:'';flex:1;height:1px;
-  background:linear-gradient(90deg,transparent,var(--gold),transparent);
-}
-.header-resources{font-size:1.1rem;letter-spacing:.3em;}
+      /* ─── HEADER ─── */
+      header {
+        text-align: center;
+        padding: 36px 0 24px;
+        position: relative;
+      }
+      .header-eyebrow {
+        font-family: "Cinzel", serif;
+        font-size: 0.65rem;
+        letter-spacing: 0.35em;
+        color: var(--text3);
+        text-transform: uppercase;
+        margin-bottom: 8px;
+      }
+      .header-title {
+        font-family: "Cinzel Decorative", serif;
+        font-size: clamp(1.6rem, 6vw, 3rem);
+        font-weight: 900;
+        color: var(--gold2);
+        text-shadow:
+          0 0 40px rgba(201, 146, 42, 0.5),
+          0 2px 0 rgba(0, 0, 0, 0.8);
+        letter-spacing: 0.04em;
+        line-height: 1.1;
+      }
+      .header-sub {
+        font-family: "Cinzel", serif;
+        font-size: 0.75rem;
+        color: var(--text3);
+        letter-spacing: 0.2em;
+        margin-top: 8px;
+        text-transform: uppercase;
+      }
+      .header-divider {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin: 16px auto 0;
+        max-width: 500px;
+      }
+      .header-divider::before,
+      .header-divider::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--gold),
+          transparent
+        );
+      }
+      .header-resources {
+        font-size: 1.1rem;
+        letter-spacing: 0.3em;
+      }
 
-/* ─── TABS ─── */
-.tabs-bar{
-  display:flex;
-  justify-content:center;
-  gap:2px;
-  margin:24px 0 28px;
-  background:rgba(0,0,0,0.4);
-  border:1px solid var(--border);
-  border-radius:4px;
-  padding:4px;
-  overflow-x:auto;
-}
-.tab-btn{
-  font-family:'Cinzel',serif;
-  font-size:.65rem;
-  letter-spacing:.12em;
-  text-transform:uppercase;
-  color:var(--text3);
-  background:none;
-  border:none;
-  padding:9px 16px;
-  border-radius:3px;
-  cursor:pointer;
-  white-space:nowrap;
-  transition:all .2s;
-  position:relative;
-}
-.tab-btn:hover{color:var(--cream2);background:rgba(201,146,42,0.08);}
-.tab-btn.active{
-  background:linear-gradient(135deg,#2a1a05,#3d2510);
-  color:var(--gold3);
-  border:1px solid var(--border2);
-  text-shadow:0 0 12px rgba(201,146,42,0.5);
-}
-.pane{display:none}
-.pane.active{display:block;animation:fadeIn .35s ease}
-@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+      /* ─── TABS ─── */
+      .tabs-bar {
+        display: flex;
+        justify-content: center;
+        gap: 2px;
+        margin: 24px 0 28px;
+        background: rgba(0, 0, 0, 0.4);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 4px;
+        overflow-x: auto;
+      }
+      .tab-btn {
+        font-family: "Cinzel", serif;
+        font-size: 0.65rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--text3);
+        background: none;
+        border: none;
+        padding: 9px 16px;
+        border-radius: 3px;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: all 0.2s;
+        position: relative;
+      }
+      .tab-btn:hover {
+        color: var(--cream2);
+        background: rgba(201, 146, 42, 0.08);
+      }
+      .tab-btn.active {
+        background: linear-gradient(135deg, #2a1a05, #3d2510);
+        color: var(--gold3);
+        border: 1px solid var(--border2);
+        text-shadow: 0 0 12px rgba(201, 146, 42, 0.5);
+      }
+      .pane {
+        display: none;
+      }
+      .pane.active {
+        display: block;
+        animation: fadeIn 0.35s ease;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
 
-/* ─── CARDS ─── */
-.card{
-  background:linear-gradient(135deg,var(--parch2),var(--parch3));
-  border:1px solid var(--border);
-  border-radius:6px;
-  padding:20px;
-  margin-bottom:16px;
-  position:relative;
-  overflow:hidden;
-}
-.card::before{
-  content:'';
-  position:absolute;
-  inset:0;
-  background:linear-gradient(135deg,rgba(201,146,42,0.04) 0%,transparent 60%);
-  pointer-events:none;
-}
-.card:hover{border-color:var(--border2);box-shadow:0 0 20px rgba(201,146,42,0.08);}
+      /* ─── CARDS ─── */
+      .card {
+        background: linear-gradient(135deg, var(--parch2), var(--parch3));
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 20px;
+        margin-bottom: 16px;
+        position: relative;
+        overflow: hidden;
+      }
+      .card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          135deg,
+          rgba(201, 146, 42, 0.04) 0%,
+          transparent 60%
+        );
+        pointer-events: none;
+      }
+      .card:hover {
+        border-color: var(--border2);
+        box-shadow: 0 0 20px rgba(201, 146, 42, 0.08);
+      }
 
-.section-label{
-  font-family:'Cinzel',serif;
-  font-size:.62rem;
-  letter-spacing:.25em;
-  text-transform:uppercase;
-  color:var(--text3);
-  padding:0 0 10px;
-  display:flex;
-  align-items:center;
-  gap:8px;
-}
-.section-label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
+      .section-label {
+        font-family: "Cinzel", serif;
+        font-size: 0.62rem;
+        letter-spacing: 0.25em;
+        text-transform: uppercase;
+        color: var(--text3);
+        padding: 0 0 10px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .section-label::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: linear-gradient(90deg, var(--border), transparent);
+      }
 
-/* ─── PLAYER GRID (Overview) ─── */
-.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;}
-@media(max-width:480px){.pgrid{grid-template-columns:repeat(2,1fr);}}
-.pcard{
-  background:linear-gradient(160deg,rgba(0,0,0,0.6),rgba(0,0,0,0.3));
-  border:1px solid var(--pc-color,var(--border));
-  border-radius:6px;
-  padding:14px 12px;
-  position:relative;
-  overflow:hidden;
-  transition:transform .2s,box-shadow .2s;
-}
-.pcard:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.4),0 0 20px var(--pc-glow,transparent);}
-.pcard::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:3px;
-  background:var(--pc-color,var(--border));
-  box-shadow:0 0 12px var(--pc-color,transparent);
-}
-.pcard-avatar{
-  width:36px;height:36px;border-radius:50%;
-  background:var(--pc-color);
-  display:flex;align-items:center;justify-content:center;
-  font-family:'Cinzel',serif;font-size:.85rem;font-weight:700;
-  color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.5);
-  margin-bottom:10px;
-  box-shadow:0 0 16px var(--pc-glow,transparent);
-}
-.pcard-name{font-family:'Cinzel',serif;font-size:.78rem;font-weight:600;color:var(--cream);margin-bottom:8px;}
-.pcard-stat{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
-.pcard-stat-label{font-size:.62rem;color:var(--text3);letter-spacing:.05em;}
-.pcard-stat-val{font-family:'Cinzel',serif;font-size:.78rem;color:var(--text2);}
-.pcard-titles{margin-top:8px;font-size:.72rem;color:var(--gold2);}
-.drought-badge{
-  margin-top:8px;
-  padding:3px 7px;
-  border-radius:3px;
-  font-family:'Cinzel',serif;
-  font-size:.6rem;
-  letter-spacing:.08em;
-  text-align:center;
-}
-.drought-ok{background:rgba(74,138,58,0.2);color:#7ec86a;border:1px solid rgba(74,138,58,0.3);}
-.drought-med{background:rgba(201,146,42,0.15);color:var(--gold2);border:1px solid rgba(201,146,42,0.2);}
-.drought-hot{background:rgba(196,74,42,0.2);color:#e87a5a;border:1px solid rgba(196,74,42,0.3);}
+      /* ─── PLAYER GRID (Overview) ─── */
+      .pgrid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+      @media (max-width: 480px) {
+        .pgrid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      .pcard {
+        background: linear-gradient(
+          160deg,
+          rgba(0, 0, 0, 0.6),
+          rgba(0, 0, 0, 0.3)
+        );
+        border: 1px solid var(--pc-color, var(--border));
+        border-radius: 6px;
+        padding: 14px 12px;
+        position: relative;
+        overflow: hidden;
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+      }
+      .pcard:hover {
+        transform: translateY(-2px);
+        box-shadow:
+          0 8px 24px rgba(0, 0, 0, 0.4),
+          0 0 20px var(--pc-glow, transparent);
+      }
+      .pcard::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: var(--pc-color, var(--border));
+        box-shadow: 0 0 12px var(--pc-color, transparent);
+      }
+      .pcard-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: var(--pc-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Cinzel", serif;
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: #fff;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+        margin-bottom: 10px;
+        box-shadow: 0 0 16px var(--pc-glow, transparent);
+      }
+      .pcard-name {
+        font-family: "Cinzel", serif;
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: var(--cream);
+        margin-bottom: 8px;
+      }
+      .pcard-stat {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 4px;
+      }
+      .pcard-stat-label {
+        font-size: 0.62rem;
+        color: var(--text3);
+        letter-spacing: 0.05em;
+      }
+      .pcard-stat-val {
+        font-family: "Cinzel", serif;
+        font-size: 0.78rem;
+        color: var(--text2);
+      }
+      .pcard-titles {
+        margin-top: 8px;
+        font-size: 0.72rem;
+        color: var(--gold2);
+      }
+      .drought-badge {
+        margin-top: 8px;
+        padding: 3px 7px;
+        border-radius: 3px;
+        font-family: "Cinzel", serif;
+        font-size: 0.6rem;
+        letter-spacing: 0.08em;
+        text-align: center;
+      }
+      .drought-ok {
+        background: rgba(74, 138, 58, 0.2);
+        color: #7ec86a;
+        border: 1px solid rgba(74, 138, 58, 0.3);
+      }
+      .drought-med {
+        background: rgba(201, 146, 42, 0.15);
+        color: var(--gold2);
+        border: 1px solid rgba(201, 146, 42, 0.2);
+      }
+      .drought-hot {
+        background: rgba(196, 74, 42, 0.2);
+        color: #e87a5a;
+        border: 1px solid rgba(196, 74, 42, 0.3);
+      }
 
-/* ─── FILL-IN PLAYERS ─── */
-.fillin-badge{
-  display:inline-block;
-  font-family:'Cinzel',serif;font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;
-  padding:1px 5px;border-radius:2px;
-  background:rgba(255,255,255,0.06);color:var(--text3);
-  border:1px solid rgba(255,255,255,0.1);
-  vertical-align:middle;margin-left:4px;
-}
-.pcard-fi-bar{
-  position:absolute;top:0;left:0;right:0;height:3px;
-  background:var(--fi-grad);
-}
-.avatar-fi{
-  background:var(--fi-grad) !important;
-  border:none !important;
-  box-shadow:0 0 14px rgba(255,255,255,0.1) !important;
-}
-.dot-fi{
-  background:var(--fi-grad) !important;
-  box-shadow:none !important;
-}
-.bar-fill-fi{
-  background:var(--fi-grad) !important;
-  box-shadow:none !important;
-}
-.pill-fi{
-  background:rgba(255,255,255,0.04) !important;
-  color:var(--text2) !important;
-  border-color:rgba(255,255,255,0.12) !important;
-}
+      /* ─── FILL-IN PLAYERS ─── */
+      .fillin-badge {
+        display: inline-block;
+        font-family: "Cinzel", serif;
+        font-size: 0.5rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        padding: 1px 5px;
+        border-radius: 2px;
+        background: rgba(255, 255, 255, 0.06);
+        color: var(--text3);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        vertical-align: middle;
+        margin-left: 4px;
+      }
+      .pcard-fi-bar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: var(--fi-grad);
+      }
+      .avatar-fi {
+        background: var(--fi-grad) !important;
+        border: none !important;
+        box-shadow: 0 0 14px rgba(255, 255, 255, 0.1) !important;
+      }
+      .dot-fi {
+        background: var(--fi-grad) !important;
+        box-shadow: none !important;
+      }
+      .bar-fill-fi {
+        background: var(--fi-grad) !important;
+        box-shadow: none !important;
+      }
+      .pill-fi {
+        background: rgba(255, 255, 255, 0.04) !important;
+        color: var(--text2) !important;
+        border-color: rgba(255, 255, 255, 0.12) !important;
+      }
 
-/* ─── WIN RACE BARS ─── */
-.race-toggle{display:flex;gap:6px;margin-bottom:16px;}
-.rtbtn{
-  font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.12em;
-  text-transform:uppercase;padding:5px 12px;border-radius:3px;
-  border:1px solid var(--border);background:none;color:var(--text3);
-  cursor:pointer;transition:all .2s;
-}
-.rtbtn.active{background:var(--parch3);border-color:var(--border2);color:var(--gold3);}
-.rtbtn:hover{color:var(--cream2);}
+      /* ─── WIN RACE BARS ─── */
+      .race-toggle {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 16px;
+      }
+      .rtbtn {
+        font-family: "Cinzel", serif;
+        font-size: 0.6rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        padding: 5px 12px;
+        border-radius: 3px;
+        border: 1px solid var(--border);
+        background: none;
+        color: var(--text3);
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .rtbtn.active {
+        background: var(--parch3);
+        border-color: var(--border2);
+        color: var(--gold3);
+      }
+      .rtbtn:hover {
+        color: var(--cream2);
+      }
 
-.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
-.bar-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
-.bar-name{font-family:'Cinzel',serif;font-size:.72rem;color:var(--text2);width:58px;flex-shrink:0;}
-.bar-track{flex:1;height:12px;background:rgba(255,255,255,0.04);border-radius:6px;overflow:hidden;border:1px solid rgba(255,255,255,0.06);}
-.bar-fill{height:100%;border-radius:6px;transition:width .8s cubic-bezier(.34,1.56,.64,1);}
-.bar-num{font-family:'Cinzel',serif;font-size:.78rem;width:20px;text-align:right;flex-shrink:0;}
+      .bar-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+      .bar-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+      .bar-name {
+        font-family: "Cinzel", serif;
+        font-size: 0.72rem;
+        color: var(--text2);
+        width: 58px;
+        flex-shrink: 0;
+      }
+      .bar-track {
+        flex: 1;
+        height: 12px;
+        background: rgba(255, 255, 255, 0.04);
+        border-radius: 6px;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+      }
+      .bar-fill {
+        height: 100%;
+        border-radius: 6px;
+        transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+      .bar-num {
+        font-family: "Cinzel", serif;
+        font-size: 0.78rem;
+        width: 20px;
+        text-align: right;
+        flex-shrink: 0;
+      }
 
-/* ─── DROUGHT TABLE ─── */
-.drought-table{width:100%;border-collapse:collapse;}
-.drought-table th{font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text3);padding:8px 12px;text-align:left;border-bottom:1px solid var(--border);}
-.drought-table td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,0.04);font-size:.78rem;}
-.drought-table tr:last-child td{border-bottom:none;}
-.drought-table tr:hover td{background:rgba(255,255,255,0.02);}
+      /* ─── DROUGHT TABLE ─── */
+      .drought-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .drought-table th {
+        font-family: "Cinzel", serif;
+        font-size: 0.58rem;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--text3);
+        padding: 8px 12px;
+        text-align: left;
+        border-bottom: 1px solid var(--border);
+      }
+      .drought-table td {
+        padding: 10px 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        font-size: 0.78rem;
+      }
+      .drought-table tr:last-child td {
+        border-bottom: none;
+      }
+      .drought-table tr:hover td {
+        background: rgba(255, 255, 255, 0.02);
+      }
 
-/* ─── GAME CARDS (S6) ─── */
-.game-card{
-  background:linear-gradient(135deg,rgba(0,0,0,0.5),rgba(0,0,0,0.2));
-  border:1px solid var(--border);
-  border-radius:6px;
-  padding:16px;
-  margin-bottom:12px;
-  transition:border-color .2s;
-}
-.game-card:hover{border-color:var(--border2);}
-.game-card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;}
-.game-id{font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.15em;color:var(--text3);text-transform:uppercase;}
-.game-date{font-size:.72rem;color:var(--text3);}
-.game-winner-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
-.winner-crown{font-size:1rem;}
-.winner-name{font-family:'Cinzel',serif;font-size:.92rem;font-weight:600;}
-.game-pills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;}
-.pill{
-  display:inline-flex;align-items:center;gap:5px;
-  padding:3px 8px;border-radius:3px;
-  font-family:'Cinzel',serif;font-size:.64rem;
-  border:1px solid transparent;
-}
-.badge{
-  font-size:.55rem;padding:1px 4px;border-radius:2px;
-  font-family:'Cinzel',serif;letter-spacing:.05em;
-}
-.badge-gold{background:rgba(201,146,42,0.25);color:var(--gold2);border:1px solid rgba(201,146,42,0.3);}
-.badge-win{background:rgba(255,255,255,0.1);color:var(--cream);}
-.badge-la{background:rgba(74,138,58,0.2);color:#7ec86a;border:1px solid rgba(74,138,58,0.3);}
-.badge-lr{background:rgba(42,100,196,0.2);color:#6a9ae8;border:1px solid rgba(42,100,196,0.3);}
-.game-meta{font-size:.7rem;color:var(--text3);margin-top:6px;display:flex;gap:12px;flex-wrap:wrap;}
-.game-note{font-style:italic;font-size:.73rem;color:var(--text2);margin-top:6px;padding-left:8px;border-left:2px solid var(--border);}
-.incomplete-tag{font-size:.58rem;padding:2px 6px;border-radius:2px;background:rgba(196,74,42,0.15);color:#c46a50;border:1px solid rgba(196,74,42,0.2);font-family:'Cinzel',serif;letter-spacing:.08em;}
+      /* ─── GAME CARDS (S6) ─── */
+      .game-card {
+        background: linear-gradient(
+          135deg,
+          rgba(0, 0, 0, 0.5),
+          rgba(0, 0, 0, 0.2)
+        );
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 16px;
+        margin-bottom: 12px;
+        transition: border-color 0.2s;
+      }
+      .game-card:hover {
+        border-color: var(--border2);
+      }
+      .game-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .game-id {
+        font-family: "Cinzel", serif;
+        font-size: 0.62rem;
+        letter-spacing: 0.15em;
+        color: var(--text3);
+        text-transform: uppercase;
+      }
+      .game-date {
+        font-size: 0.72rem;
+        color: var(--text3);
+      }
+      .game-winner-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 10px;
+      }
+      .winner-crown {
+        font-size: 1rem;
+      }
+      .winner-name {
+        font-family: "Cinzel", serif;
+        font-size: 0.92rem;
+        font-weight: 600;
+      }
+      .game-pills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-bottom: 8px;
+      }
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 3px 8px;
+        border-radius: 3px;
+        font-family: "Cinzel", serif;
+        font-size: 0.64rem;
+        border: 1px solid transparent;
+      }
+      .badge {
+        font-size: 0.55rem;
+        padding: 1px 4px;
+        border-radius: 2px;
+        font-family: "Cinzel", serif;
+        letter-spacing: 0.05em;
+      }
+      .badge-gold {
+        background: rgba(201, 146, 42, 0.25);
+        color: var(--gold2);
+        border: 1px solid rgba(201, 146, 42, 0.3);
+      }
+      .badge-win {
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--cream);
+      }
+      .badge-la {
+        background: rgba(74, 138, 58, 0.2);
+        color: #7ec86a;
+        border: 1px solid rgba(74, 138, 58, 0.3);
+      }
+      .badge-lr {
+        background: rgba(42, 100, 196, 0.2);
+        color: #6a9ae8;
+        border: 1px solid rgba(42, 100, 196, 0.3);
+      }
+      .game-meta {
+        font-size: 0.7rem;
+        color: var(--text3);
+        margin-top: 6px;
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .game-note {
+        font-style: italic;
+        font-size: 0.73rem;
+        color: var(--text2);
+        margin-top: 6px;
+        padding-left: 8px;
+        border-left: 2px solid var(--border);
+      }
+      .incomplete-tag {
+        font-size: 0.58rem;
+        padding: 2px 6px;
+        border-radius: 2px;
+        background: rgba(196, 74, 42, 0.15);
+        color: #c46a50;
+        border: 1px solid rgba(196, 74, 42, 0.2);
+        font-family: "Cinzel", serif;
+        letter-spacing: 0.08em;
+      }
 
-/* ─── SEASON STANDINGS ─── */
-.standings-row{display:flex;align-items:center;gap:10px;padding:9px 12px;border-bottom:1px solid rgba(255,255,255,0.04);}
-.standings-row:last-child{border-bottom:none;}
-.standings-rank{font-family:'Cinzel',serif;font-size:.65rem;color:var(--text3);width:20px;}
-.standings-name{font-family:'Cinzel',serif;font-size:.8rem;flex:1;}
-.standings-wins{font-family:'Cinzel',serif;font-size:.88rem;color:var(--gold2);}
-.standings-pip{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+      /* ─── SEASON STANDINGS ─── */
+      .standings-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      }
+      .standings-row:last-child {
+        border-bottom: none;
+      }
+      .standings-rank {
+        font-family: "Cinzel", serif;
+        font-size: 0.65rem;
+        color: var(--text3);
+        width: 20px;
+      }
+      .standings-name {
+        font-family: "Cinzel", serif;
+        font-size: 0.8rem;
+        flex: 1;
+      }
+      .standings-wins {
+        font-family: "Cinzel", serif;
+        font-size: 0.88rem;
+        color: var(--gold2);
+      }
+      .standings-pip {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
 
-/* ─── CHAMPIONS ─── */
-.champion-card{
-  display:flex;
-  align-items:center;
-  gap:16px;
-  background:linear-gradient(135deg,rgba(0,0,0,0.5),rgba(0,0,0,0.25));
-  border:1px solid var(--border);
-  border-radius:6px;
-  padding:16px 20px;
-  margin-bottom:10px;
-  transition:border-color .2s,transform .2s;
-}
-.champion-card:hover{border-color:var(--border2);transform:translateX(3px);}
-.champion-card.current{
-  border-color:rgba(201,146,42,0.4);
-  background:linear-gradient(135deg,rgba(201,146,42,0.08),rgba(0,0,0,0.4));
-}
-.champ-season{font-family:'Cinzel Decorative',serif;font-size:1.4rem;font-weight:700;color:var(--text3);width:36px;flex-shrink:0;}
-.champ-icon{font-size:1.5rem;flex-shrink:0;}
-.champ-info{flex:1;}
-.champ-name{font-family:'Cinzel',serif;font-size:1rem;font-weight:600;color:var(--cream);}
-.champ-sub{font-size:.7rem;color:var(--text3);margin-top:3px;}
-.champ-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;}
+      /* ─── CHAMPIONS ─── */
+      .champion-card {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        background: linear-gradient(
+          135deg,
+          rgba(0, 0, 0, 0.5),
+          rgba(0, 0, 0, 0.25)
+        );
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 16px 20px;
+        margin-bottom: 10px;
+        transition:
+          border-color 0.2s,
+          transform 0.2s;
+      }
+      .champion-card:hover {
+        border-color: var(--border2);
+        transform: translateX(3px);
+      }
+      .champion-card.current {
+        border-color: rgba(201, 146, 42, 0.4);
+        background: linear-gradient(
+          135deg,
+          rgba(201, 146, 42, 0.08),
+          rgba(0, 0, 0, 0.4)
+        );
+      }
+      .champ-season {
+        font-family: "Cinzel Decorative", serif;
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--text3);
+        width: 36px;
+        flex-shrink: 0;
+      }
+      .champ-icon {
+        font-size: 1.5rem;
+        flex-shrink: 0;
+      }
+      .champ-info {
+        flex: 1;
+      }
+      .champ-name {
+        font-family: "Cinzel", serif;
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--cream);
+      }
+      .champ-sub {
+        font-size: 0.7rem;
+        color: var(--text3);
+        margin-top: 3px;
+      }
+      .champ-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
 
-/* ─── HISTORY TABLE ─── */
-.htable{width:100%;border-collapse:collapse;}
-.htable th{font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text3);padding:8px 10px;text-align:left;border-bottom:1px solid var(--border);}
-.htable td{padding:9px 10px;border-bottom:1px solid rgba(255,255,255,0.04);font-size:.74rem;vertical-align:middle;}
-.htable tr:last-child td{border-bottom:none;}
-.htable tr:hover td{background:rgba(255,255,255,0.02);}
+      /* ─── HISTORY TABLE ─── */
+      .htable {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .htable th {
+        font-family: "Cinzel", serif;
+        font-size: 0.58rem;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--text3);
+        padding: 8px 10px;
+        text-align: left;
+        border-bottom: 1px solid var(--border);
+      }
+      .htable td {
+        padding: 9px 10px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        font-size: 0.74rem;
+        vertical-align: middle;
+      }
+      .htable tr:last-child td {
+        border-bottom: none;
+      }
+      .htable tr:hover td {
+        background: rgba(255, 255, 255, 0.02);
+      }
 
-/* ─── LOG GAME FORM ─── */
-.form-grid{display:grid;gap:14px;}
-.form-group{display:flex;flex-direction:column;gap:6px;}
-.form-label{font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text3);}
-.form-input,.form-select,.form-textarea{
-  background:rgba(0,0,0,0.4);
-  border:1px solid var(--border);
-  border-radius:4px;
-  color:var(--text1);
-  font-family:'Lora',serif;
-  font-size:.82rem;
-  padding:9px 12px;
-  outline:none;
-  transition:border-color .2s;
-}
-.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--gold);box-shadow:0 0 0 2px rgba(201,146,42,0.1);}
-.form-select option{background:#1e1305;}
-.form-textarea{min-height:70px;resize:vertical;}
-.player-checkboxes{display:flex;flex-wrap:wrap;gap:8px;}
-.player-check-label{
-  display:flex;align-items:center;gap:6px;
-  padding:6px 10px;border-radius:4px;
-  border:1px solid var(--border);
-  cursor:pointer;transition:all .2s;
-  font-family:'Cinzel',serif;font-size:.68rem;
-  background:rgba(0,0,0,0.3);
-}
-.player-check-label:hover{border-color:var(--border2);}
-.player-check-label input{display:none;}
-.player-check-label.checked{border-color:var(--pc-color,var(--border));background:var(--pc-bg,rgba(201,146,42,0.08));}
-.player-dot{width:8px;height:8px;border-radius:50%;}
-.submit-btn{
-  font-family:'Cinzel',serif;
-  font-size:.75rem;
-  letter-spacing:.15em;
-  text-transform:uppercase;
-  background:linear-gradient(135deg,#8a5a10,#c9922a,#e8b84b,#c9922a,#8a5a10);
-  background-size:200% 100%;
-  border:1px solid var(--gold);
-  color:#1e0e00;
-  padding:12px 32px;
-  border-radius:4px;
-  cursor:pointer;
-  font-weight:700;
-  transition:background-position .4s,box-shadow .2s;
-  box-shadow:0 0 20px rgba(201,146,42,0.2);
-}
-.submit-btn:hover{background-position:100% 0;box-shadow:0 0 30px rgba(201,146,42,0.4);}
-.form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+      /* ─── LOG GAME FORM ─── */
+      .form-grid {
+        display: grid;
+        gap: 14px;
+      }
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .form-label {
+        font-family: "Cinzel", serif;
+        font-size: 0.62rem;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--text3);
+      }
+      .form-input,
+      .form-select,
+      .form-textarea {
+        background: rgba(0, 0, 0, 0.4);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        color: var(--text1);
+        font-family: "Lora", serif;
+        font-size: 0.82rem;
+        padding: 9px 12px;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+      .form-input:focus,
+      .form-select:focus,
+      .form-textarea:focus {
+        border-color: var(--gold);
+        box-shadow: 0 0 0 2px rgba(201, 146, 42, 0.1);
+      }
+      .form-select option {
+        background: #1e1305;
+      }
+      .form-textarea {
+        min-height: 70px;
+        resize: vertical;
+      }
+      .player-checkboxes {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .player-check-label {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 10px;
+        border-radius: 4px;
+        border: 1px solid var(--border);
+        cursor: pointer;
+        transition: all 0.2s;
+        font-family: "Cinzel", serif;
+        font-size: 0.68rem;
+        background: rgba(0, 0, 0, 0.3);
+      }
+      .player-check-label:hover {
+        border-color: var(--border2);
+      }
+      .player-check-label input {
+        display: none;
+      }
+      .player-check-label.checked {
+        border-color: var(--pc-color, var(--border));
+        background: var(--pc-bg, rgba(201, 146, 42, 0.08));
+      }
+      .player-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+      }
+      .submit-btn {
+        font-family: "Cinzel", serif;
+        font-size: 0.75rem;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        background: linear-gradient(
+          135deg,
+          #8a5a10,
+          #c9922a,
+          #e8b84b,
+          #c9922a,
+          #8a5a10
+        );
+        background-size: 200% 100%;
+        border: 1px solid var(--gold);
+        color: #1e0e00;
+        padding: 12px 32px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 700;
+        transition:
+          background-position 0.4s,
+          box-shadow 0.2s;
+        box-shadow: 0 0 20px rgba(201, 146, 42, 0.2);
+      }
+      .submit-btn:hover {
+        background-position: 100% 0;
+        box-shadow: 0 0 30px rgba(201, 146, 42, 0.4);
+      }
+      .form-row-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
 
-/* ─── PICK POSITION ─── */
-.pos-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:4px;}
-.pos-grid-6{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:4px;}
-@media(max-width:520px){.pos-grid-6{grid-template-columns:repeat(3,1fr);}}
-.pos-card{background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:4px;padding:10px 8px;text-align:center;}
-.pos-num{font-family:'Cinzel Decorative',serif;font-size:1.2rem;color:var(--gold);margin-bottom:4px;}
-.pos-wins{font-family:'Cinzel',serif;font-size:.68rem;color:var(--text2);}
-.pos-game-type{
-  font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--text3);margin-bottom:10px;padding-bottom:8px;
-  border-bottom:1px solid var(--border);
-}
-.pos-two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
-@media(max-width:600px){.pos-two-col{grid-template-columns:1fr;}}
+      /* ─── PICK POSITION ─── */
+      .pos-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+        margin-bottom: 4px;
+      }
+      .pos-grid-6 {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 8px;
+        margin-bottom: 4px;
+      }
+      @media (max-width: 520px) {
+        .pos-grid-6 {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+      .pos-card {
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 10px 8px;
+        text-align: center;
+      }
+      .pos-num {
+        font-family: "Cinzel Decorative", serif;
+        font-size: 1.2rem;
+        color: var(--gold);
+        margin-bottom: 4px;
+      }
+      .pos-wins {
+        font-family: "Cinzel", serif;
+        font-size: 0.68rem;
+        color: var(--text2);
+      }
+      .pos-game-type {
+        font-family: "Cinzel", serif;
+        font-size: 0.6rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--text3);
+        margin-bottom: 10px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--border);
+      }
+      .pos-two-col {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+      }
+      @media (max-width: 600px) {
+        .pos-two-col {
+          grid-template-columns: 1fr;
+        }
+      }
 
-/* ─── MISC ─── */
-.dot{display:inline-block;width:9px;height:9px;border-radius:50%;}
-.dot-glow{box-shadow:0 0 6px currentColor;}
-.resource-strip{
-  display:flex;justify-content:center;gap:4px;
-  font-size:.85rem;opacity:.35;
-  margin:8px 0;
-}
-.empty-state{
-  text-align:center;
-  padding:40px 20px;
-  color:var(--text3);
-  font-family:'Cinzel',serif;
-  font-size:.75rem;
-  letter-spacing:.1em;
-}
-.kv{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.05);}
-.kv:last-child{border-bottom:none;}
-.kv-k{font-size:.72rem;color:var(--text3);}
-.kv-v{font-family:'Cinzel',serif;font-size:.78rem;color:var(--cream2);}
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-@media(max-width:520px){.two-col{grid-template-columns:1fr;}}
-.season-badge{
-  display:inline-block;
-  font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.12em;
-  padding:2px 7px;border-radius:2px;
-  background:rgba(201,146,42,0.15);
-  border:1px solid rgba(201,146,42,0.25);
-  color:var(--gold2);
-}
-.toast{
-  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);
-  background:linear-gradient(135deg,#2a1a05,#3d2510);
-  border:1px solid var(--gold);
-  color:var(--gold3);
-  font-family:'Cinzel',serif;font-size:.75rem;letter-spacing:.1em;
-  padding:12px 24px;border-radius:4px;
-  box-shadow:0 8px 32px rgba(0,0,0,0.6),0 0 20px rgba(201,146,42,0.2);
-  transition:transform .4s cubic-bezier(.34,1.56,.64,1);
-  z-index:999;white-space:nowrap;
-}
-.toast.show{transform:translateX(-50%) translateY(0);}
-.inprog{
-  font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.1em;
-  padding:2px 6px;border-radius:2px;
-  background:rgba(201,146,42,0.12);
-  border:1px solid rgba(201,146,42,0.2);
-  color:var(--gold);
-  vertical-align:middle;
-}
+      /* ─── MISC ─── */
+      .dot {
+        display: inline-block;
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+      }
+      .dot-glow {
+        box-shadow: 0 0 6px currentColor;
+      }
+      .resource-strip {
+        display: flex;
+        justify-content: center;
+        gap: 4px;
+        font-size: 0.85rem;
+        opacity: 0.35;
+        margin: 8px 0;
+      }
+      .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        color: var(--text3);
+        font-family: "Cinzel", serif;
+        font-size: 0.75rem;
+        letter-spacing: 0.1em;
+      }
+      .kv {
+        display: flex;
+        justify-content: space-between;
+        padding: 7px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      }
+      .kv:last-child {
+        border-bottom: none;
+      }
+      .kv-k {
+        font-size: 0.72rem;
+        color: var(--text3);
+      }
+      .kv-v {
+        font-family: "Cinzel", serif;
+        font-size: 0.78rem;
+        color: var(--cream2);
+      }
+      .two-col {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+      @media (max-width: 520px) {
+        .two-col {
+          grid-template-columns: 1fr;
+        }
+      }
+      .season-badge {
+        display: inline-block;
+        font-family: "Cinzel", serif;
+        font-size: 0.58rem;
+        letter-spacing: 0.12em;
+        padding: 2px 7px;
+        border-radius: 2px;
+        background: rgba(201, 146, 42, 0.15);
+        border: 1px solid rgba(201, 146, 42, 0.25);
+        color: var(--gold2);
+      }
+      .toast {
+        position: fixed;
+        bottom: 24px;
+        left: 50%;
+        transform: translateX(-50%) translateY(100px);
+        background: linear-gradient(135deg, #2a1a05, #3d2510);
+        border: 1px solid var(--gold);
+        color: var(--gold3);
+        font-family: "Cinzel", serif;
+        font-size: 0.75rem;
+        letter-spacing: 0.1em;
+        padding: 12px 24px;
+        border-radius: 4px;
+        box-shadow:
+          0 8px 32px rgba(0, 0, 0, 0.6),
+          0 0 20px rgba(201, 146, 42, 0.2);
+        transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        z-index: 999;
+        white-space: nowrap;
+      }
+      .toast.show {
+        transform: translateX(-50%) translateY(0);
+      }
+      .inprog {
+        font-family: "Cinzel", serif;
+        font-size: 0.58rem;
+        letter-spacing: 0.1em;
+        padding: 2px 6px;
+        border-radius: 2px;
+        background: rgba(201, 146, 42, 0.12);
+        border: 1px solid rgba(201, 146, 42, 0.2);
+        color: var(--gold);
+        vertical-align: middle;
+      }
 
-/* ─── FILTER BAR ─── */
-.filter-bar{
-  display:flex;
-  align-items:center;
-  justify-content:flex-end;
-  gap:6px;
-  margin:-14px 0 20px;
-  padding:0 2px;
-}
-.filter-label{
-  font-family:'Cinzel',serif;
-  font-size:.55rem;
-  letter-spacing:.18em;
-  text-transform:uppercase;
-  color:var(--text3);
-  margin-right:4px;
-}
-.filter-btn{
-  font-family:'Cinzel',serif;
-  font-size:.58rem;
-  letter-spacing:.1em;
-  text-transform:uppercase;
-  padding:5px 11px;
-  border-radius:3px;
-  border:1px solid var(--border);
-  background:none;
-  color:var(--text3);
-  cursor:pointer;
-  transition:all .2s;
-  display:flex;
-  align-items:center;
-  gap:5px;
-}
-.filter-btn:hover{color:var(--cream2);border-color:var(--border2);}
-.filter-btn.active{
-  background:linear-gradient(135deg,#1a1005,#2e1e08);
-  border-color:var(--border2);
-  color:var(--gold3);
-  text-shadow:0 0 10px rgba(201,146,42,0.4);
-}
-.filter-btn .fi-pip{
-  display:inline-block;
-  width:7px;height:7px;border-radius:50%;
-  background:var(--fi-grad);
-  flex-shrink:0;
-}
-/* ─── EDIT MODAL ─── */
-.modal-overlay{
-  position:fixed;inset:0;z-index:200;
-  background:rgba(0,0,0,0.75);
-  backdrop-filter:blur(4px);
-  display:flex;align-items:center;justify-content:center;
-  padding:16px;
-  animation:fadeIn .2s ease;
-}
-.modal{
-  background:linear-gradient(135deg,var(--parch2),var(--parch3));
-  border:1px solid var(--border2);
-  border-radius:8px;
-  width:100%;max-width:520px;
-  max-height:90vh;overflow-y:auto;
-  padding:24px;
-  box-shadow:0 24px 60px rgba(0,0,0,0.7),0 0 40px rgba(201,146,42,0.1);
-}
-.modal-title{
-  font-family:'Cinzel Decorative',serif;
-  font-size:.9rem;color:var(--gold2);
-  margin-bottom:20px;
-  display:flex;align-items:center;justify-content:space-between;
-}
-.modal-close{
-  background:none;border:none;color:var(--text3);
-  cursor:pointer;font-size:1.1rem;padding:2px 6px;
-  transition:color .2s;
-}
-.modal-close:hover{color:var(--cream);}
-.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;flex-wrap:wrap;}
-.btn-save{
-  font-family:'Cinzel',serif;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;
-  background:linear-gradient(135deg,#8a5a10,#c9922a,#e8b84b,#c9922a,#8a5a10);
-  background-size:200% 100%;
-  border:1px solid var(--gold);color:#1e0e00;
-  padding:9px 22px;border-radius:4px;cursor:pointer;font-weight:700;
-  transition:background-position .4s,box-shadow .2s;
-}
-.btn-save:hover{background-position:100% 0;box-shadow:0 0 20px rgba(201,146,42,0.4);}
-.btn-delete{
-  font-family:'Cinzel',serif;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;
-  background:rgba(196,74,42,0.15);border:1px solid rgba(196,74,42,0.4);
-  color:#e87a5a;padding:9px 22px;border-radius:4px;cursor:pointer;
-  transition:all .2s;
-}
-.btn-delete:hover{background:rgba(196,74,42,0.3);box-shadow:0 0 16px rgba(196,74,42,0.3);}
-.btn-cancel{
-  font-family:'Cinzel',serif;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;
-  background:none;border:1px solid var(--border);color:var(--text3);
-  padding:9px 22px;border-radius:4px;cursor:pointer;transition:all .2s;
-}
-.btn-cancel:hover{border-color:var(--border2);color:var(--cream2);}
-.game-card-actions{display:flex;gap:6px;margin-top:10px;justify-content:flex-end;}
-.btn-edit-sm,.btn-del-sm{
-  font-family:'Cinzel',serif;font-size:.55rem;letter-spacing:.1em;text-transform:uppercase;
-  padding:4px 10px;border-radius:3px;cursor:pointer;transition:all .2s;border:1px solid;
-}
-.btn-edit-sm{background:rgba(201,146,42,0.1);border-color:rgba(201,146,42,0.3);color:var(--gold2);}
-.btn-edit-sm:hover{background:rgba(201,146,42,0.2);box-shadow:0 0 10px rgba(201,146,42,0.2);}
-.btn-del-sm{background:rgba(196,74,42,0.1);border-color:rgba(196,74,42,0.3);color:#e87a5a;}
-.btn-del-sm:hover{background:rgba(196,74,42,0.25);}
-</style>
-</head>
-<body>
-<div class="wrap">
+      /* ─── FILTER BAR ─── */
+      .filter-bar {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 6px;
+        margin: -14px 0 20px;
+        padding: 0 2px;
+      }
+      .filter-label {
+        font-family: "Cinzel", serif;
+        font-size: 0.55rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--text3);
+        margin-right: 4px;
+      }
+      .filter-btn {
+        font-family: "Cinzel", serif;
+        font-size: 0.58rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        padding: 5px 11px;
+        border-radius: 3px;
+        border: 1px solid var(--border);
+        background: none;
+        color: var(--text3);
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+      .filter-btn:hover {
+        color: var(--cream2);
+        border-color: var(--border2);
+      }
+      .filter-btn.active {
+        background: linear-gradient(135deg, #1a1005, #2e1e08);
+        border-color: var(--border2);
+        color: var(--gold3);
+        text-shadow: 0 0 10px rgba(201, 146, 42, 0.4);
+      }
+      .filter-btn .fi-pip {
+        display: inline-block;
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--fi-grad);
+        flex-shrink: 0;
+      }
+      /* ─── EDIT MODAL ─── */
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 200;
+        background: rgba(0, 0, 0, 0.75);
+        backdrop-filter: blur(4px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+        animation: fadeIn 0.2s ease;
+      }
+      .modal {
+        background: linear-gradient(135deg, var(--parch2), var(--parch3));
+        border: 1px solid var(--border2);
+        border-radius: 8px;
+        width: 100%;
+        max-width: 520px;
+        max-height: 90vh;
+        overflow-y: auto;
+        padding: 24px;
+        box-shadow:
+          0 24px 60px rgba(0, 0, 0, 0.7),
+          0 0 40px rgba(201, 146, 42, 0.1);
+      }
+      .modal-title {
+        font-family: "Cinzel Decorative", serif;
+        font-size: 0.9rem;
+        color: var(--gold2);
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .modal-close {
+        background: none;
+        border: none;
+        color: var(--text3);
+        cursor: pointer;
+        font-size: 1.1rem;
+        padding: 2px 6px;
+        transition: color 0.2s;
+      }
+      .modal-close:hover {
+        color: var(--cream);
+      }
+      .modal-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        margin-top: 20px;
+        flex-wrap: wrap;
+      }
+      .btn-save {
+        font-family: "Cinzel", serif;
+        font-size: 0.7rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        background: linear-gradient(
+          135deg,
+          #8a5a10,
+          #c9922a,
+          #e8b84b,
+          #c9922a,
+          #8a5a10
+        );
+        background-size: 200% 100%;
+        border: 1px solid var(--gold);
+        color: #1e0e00;
+        padding: 9px 22px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 700;
+        transition:
+          background-position 0.4s,
+          box-shadow 0.2s;
+      }
+      .btn-save:hover {
+        background-position: 100% 0;
+        box-shadow: 0 0 20px rgba(201, 146, 42, 0.4);
+      }
+      .btn-delete {
+        font-family: "Cinzel", serif;
+        font-size: 0.7rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        background: rgba(196, 74, 42, 0.15);
+        border: 1px solid rgba(196, 74, 42, 0.4);
+        color: #e87a5a;
+        padding: 9px 22px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .btn-delete:hover {
+        background: rgba(196, 74, 42, 0.3);
+        box-shadow: 0 0 16px rgba(196, 74, 42, 0.3);
+      }
+      .btn-cancel {
+        font-family: "Cinzel", serif;
+        font-size: 0.7rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        background: none;
+        border: 1px solid var(--border);
+        color: var(--text3);
+        padding: 9px 22px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .btn-cancel:hover {
+        border-color: var(--border2);
+        color: var(--cream2);
+      }
+      .game-card-actions {
+        display: flex;
+        gap: 6px;
+        margin-top: 10px;
+        justify-content: flex-end;
+      }
+      .btn-edit-sm,
+      .btn-del-sm {
+        font-family: "Cinzel", serif;
+        font-size: 0.55rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        padding: 4px 10px;
+        border-radius: 3px;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: 1px solid;
+      }
+      .btn-edit-sm {
+        background: rgba(201, 146, 42, 0.1);
+        border-color: rgba(201, 146, 42, 0.3);
+        color: var(--gold2);
+      }
+      .btn-edit-sm:hover {
+        background: rgba(201, 146, 42, 0.2);
+        box-shadow: 0 0 10px rgba(201, 146, 42, 0.2);
+      }
+      .btn-del-sm {
+        background: rgba(196, 74, 42, 0.1);
+        border-color: rgba(196, 74, 42, 0.3);
+        color: #e87a5a;
+      }
+      .btn-del-sm:hover {
+        background: rgba(196, 74, 42, 0.25);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <div class="header-eyebrow">The Official</div>
+        <div class="header-title">SETTLERS OF CATAN</div>
+        <div class="header-sub">League Chronicle · Season VI</div>
+        <div class="header-divider">
+          <span class="header-resources">🌾 🧱 🌲 ⛏️ 🐑</span>
+        </div>
+      </header>
 
-<header>
-  <div class="header-eyebrow">The Official</div>
-  <div class="header-title">SETTLERS OF CATAN</div>
-  <div class="header-sub">League Chronicle · Season VI</div>
-  <div class="header-divider"><span class="header-resources">🌾 🧱 🌲 ⛏️ 🐑</span></div>
-</header>
+      <nav class="tabs-bar" id="nav">
+        <button class="tab-btn active" data-tab="overview">⚔️ Overview</button>
+        <button class="tab-btn" data-tab="s6">🗺 Season VI</button>
+        <button class="tab-btn" data-tab="champions">🏆 Champions</button>
+        <button class="tab-btn" data-tab="history">📜 History</button>
+        <button class="tab-btn" data-tab="log">✍️ Log Game</button>
+      </nav>
 
-<nav class="tabs-bar" id="nav">
-  <button class="tab-btn active" data-tab="overview">⚔️ Overview</button>
-  <button class="tab-btn" data-tab="s6">🗺 Season VI</button>
-  <button class="tab-btn" data-tab="champions">🏆 Champions</button>
-  <button class="tab-btn" data-tab="history">📜 History</button>
-  <button class="tab-btn" data-tab="log">✍️ Log Game</button>
-</nav>
+      <div class="filter-bar" id="filter-bar">
+        <span class="filter-label">Show</span>
+        <button
+          class="filter-btn active"
+          id="fb-all"
+          onclick="setFilter(false)"
+        >
+          All Players
+        </button>
+        <button class="filter-btn" id="fb-core" onclick="setFilter(true)">
+          <span class="fi-pip"></span> Core Only
+        </button>
+      </div>
 
-<div class="filter-bar" id="filter-bar">
-  <span class="filter-label">Show</span>
-  <button class="filter-btn active" id="fb-all" onclick="setFilter(false)">All Players</button>
-  <button class="filter-btn" id="fb-core" onclick="setFilter(true)">
-    <span class="fi-pip"></span> Core Only
-  </button>
-</div>
+      <div id="tab-overview" class="pane active"></div>
+      <div id="tab-s6" class="pane"></div>
+      <div id="tab-champions" class="pane"></div>
+      <div id="tab-history" class="pane"></div>
+      <div id="tab-log" class="pane"></div>
+    </div>
+    <div class="toast" id="toast">✓ Game logged to the chronicle!</div>
 
-<div id="tab-overview"  class="pane active"></div>
-<div id="tab-s6"        class="pane"></div>
-<div id="tab-champions" class="pane"></div>
-<div id="tab-history"   class="pane"></div>
-<div id="tab-log"       class="pane"></div>
+    <script>
+      const SEASON_HISTORY = [
+        {
+          num: 5,
+          champion: "krupka",
+          endDate: "2026-01-07",
+          standings: { krupka: 7, parker: 6, lance: 6, nicko: 5, tk: 1 },
+        },
+        { num: 4, champion: "krupka" },
+        { num: 3, champion: "parker" },
+        { num: 2, champion: "krupka" },
+        { num: 1, champion: "parker" },
+      ];
+      const CURRENT_SEASON = 6;
 
-</div>
-<div class="toast" id="toast">✓ Game logged to the chronicle!</div>
+      const P = [
+        {
+          id: "corbin",
+          name: "Corbin",
+          hex: "#e53935",
+          initial: "C",
+          img: "data:image/jpeg;base64,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",
+        },
+        {
+          id: "andrew",
+          name: "Andrew",
+          hex: "#43a047",
+          initial: "A",
+          img: "data:image/jpeg;base64,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",
+        },
+        {
+          id: "krupka",
+          name: "Krupka",
+          hex: "#5d3a1a",
+          initial: "K",
+          img: "data:image/jpeg;base64,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",
+        },
+        {
+          id: "parker",
+          name: "Parker",
+          hex: "#42a5f5",
+          initial: "P",
+          img: "data:image/jpeg;base64,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",
+        },
+        {
+          id: "nicko",
+          name: "Nicko",
+          hex: "#fb8c00",
+          initial: "N",
+          img: "data:image/jpeg;base64,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",
+        },
+        {
+          id: "lance",
+          name: "Lance",
+          hex: "#f0f0f0",
+          initial: "L",
+          img: "data:image/jpeg;base64,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",
+        },
+        {
+          id: "luke",
+          name: "Luke",
+          hex: "#9e9e9e",
+          initial: "Lu",
+          fillIn: true,
+        },
+        {
+          id: "lucas",
+          name: "Lucas",
+          hex: "#9e9e9e",
+          initial: "Lc",
+          fillIn: true,
+        },
+        { id: "tk", name: "TK", hex: "#9e9e9e", initial: "TK", fillIn: true },
+        {
+          id: "kranz",
+          name: "Kranz",
+          hex: "#9e9e9e",
+          initial: "Kr",
+          fillIn: true,
+        },
+        {
+          id: "grant",
+          name: "Grant",
+          hex: "#9e9e9e",
+          initial: "Gr",
+          fillIn: true,
+        },
+      ];
 
-<script>
-const SEASON_HISTORY=[
-  {num:5,champion:'krupka',endDate:'2026-01-07',standings:{krupka:7,parker:6,lance:6,nicko:5,tk:1}},
-  {num:4,champion:'krupka'},
-  {num:3,champion:'parker'},
-  {num:2,champion:'krupka'},
-  {num:1,champion:'parker'},
-];
-const CURRENT_SEASON=6;
+      let games = [
+        {
+          id: "s6g1",
+          date: "2026-01-25",
+          season: 6,
+          incomplete: true,
+          players: ["andrew"],
+          winner: "andrew",
+          vp: {},
+          lr: null,
+          la: null,
+          startPositions: {},
+          host: null,
+          notes: "",
+        },
+        {
+          id: "s6g2",
+          date: "2026-02-20",
+          season: 6,
+          incomplete: true,
+          players: ["krupka"],
+          winner: "krupka",
+          vp: {},
+          lr: null,
+          la: null,
+          startPositions: {},
+          host: null,
+          notes: "",
+        },
+        {
+          id: "s6g3",
+          date: "2026-03-12",
+          season: 6,
+          incomplete: true,
+          players: ["lance"],
+          winner: "lance",
+          vp: {},
+          lr: null,
+          la: null,
+          startPositions: {},
+          host: null,
+          notes: "",
+        },
+        {
+          id: "s6g4",
+          date: "2026-04-02",
+          season: 6,
+          incomplete: false,
+          players: ["nicko", "krupka", "andrew", "lance"],
+          winner: "lance",
+          vp: {},
+          lr: null,
+          la: "lance",
+          startPositions: { lance: 1 },
+          host: "krupka",
+          notes: "Cooked chicken on the Traeger.",
+        },
+      ];
 
-const P=[
-  {id:'corbin', name:'Corbin', hex:'#e53935', initial:'C', img:'data:image/jpeg;base64,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'},
-  {id:'andrew', name:'Andrew', hex:'#43a047', initial:'A', img:'data:image/jpeg;base64,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'},
-  {id:'krupka', name:'Krupka', hex:'#5d3a1a', initial:'K', img:'data:image/jpeg;base64,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'},
-  {id:'parker', name:'Parker', hex:'#42a5f5', initial:'P', img:'data:image/jpeg;base64,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'},
-  {id:'nicko',  name:'Nicko',  hex:'#fb8c00', initial:'N', img:'data:image/jpeg;base64,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'},
-  {id:'lance',  name:'Lance',  hex:'#f0f0f0', initial:'L', img:'data:image/jpeg;base64,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'},
-  {id:'luke',   name:'Luke',   hex:'#9e9e9e', initial:'Lu', fillIn:true},
-  {id:'lucas',  name:'Lucas',  hex:'#9e9e9e', initial:'Lc', fillIn:true},
-  {id:'tk',     name:'TK',     hex:'#9e9e9e', initial:'TK', fillIn:true},
-  {id:'kranz',  name:'Kranz',  hex:'#9e9e9e', initial:'Kr', fillIn:true},
-  {id:'grant',  name:'Grant',  hex:'#9e9e9e', initial:'Gr', fillIn:true},
-];
+      /* ─── FILL-IN FILTER ─── */
+      let hideFillIns = false;
+      function vP() {
+        return hideFillIns ? P.filter((p) => !p.fillIn) : P;
+      }
+      function setFilter(hide) {
+        hideFillIns = hide;
+        document.getElementById("fb-all").classList.toggle("active", !hide);
+        document.getElementById("fb-core").classList.toggle("active", hide);
+        // hide the fill-in section label + grid on overview when core-only
+        render();
+      }
+      function td() {
+        return new Date().toISOString().slice(0, 10);
+      }
+      function gp(id) {
+        return P.find((p) => p.id === id) || null;
+      }
+      function fmtDate(d) {
+        return new Date(d + "T12:00:00").toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        });
+      }
+      function daysBetween(d1, d2) {
+        return Math.round(
+          Math.abs(new Date(d2 + "T12:00:00") - new Date(d1 + "T12:00:00")) /
+            86400000,
+        );
+      }
+      function getSeasonWins(s) {
+        const w = {};
+        vP().forEach((p) => (w[p.id] = 0));
+        games
+          .filter((g) => g.season === s)
+          .forEach((g) => {
+            if (g.winner && w[g.winner] !== undefined) w[g.winner]++;
+          });
+        return w;
+      }
+      // Historical baseline from iMessage chat (2022-02-10 → 2026-04-16).
+      // Includes all Season 6 wins through 2026-04-16. Only log NEW S6 games dated 2026-04-17 or later.
+      const HISTORICAL_WINS = {
+        krupka: 32,
+        parker: 31,
+        nicko: 25,
+        lance: 25,
+        andrew: 18,
+        corbin: 13,
+        tk: 5,
+        luke: 1,
+      };
+      function getAllTimeWins() {
+        const w = {};
+        vP().forEach(
+          (p) =>
+            (w[p.id] =
+              (HISTORICAL_WINS[p.id] || 0) +
+              games.filter((g) => g.winner === p.id).length),
+        );
+        return w;
+      }
+      function getChampCounts() {
+        const c = {};
+        vP().forEach((p) => (c[p.id] = 0));
+        SEASON_HISTORY.forEach((s) => {
+          if (s.champion && c[s.champion] !== undefined) c[s.champion]++;
+        });
+        return c;
+      }
+      function calcStats() {
+        const s = {};
+        vP().forEach(
+          (p) => (s[p.id] = { games: 0, wins: 0, tvp: 0, lr: 0, la: 0 }),
+        );
+        games.forEach((g) => {
+          g.players.forEach((id) => {
+            if (s[id]) {
+              s[id].games++;
+              s[id].tvp += g.vp[id] || 0;
+            }
+          });
+          if (g.winner && s[g.winner]) s[g.winner].wins++;
+          if (g.lr && s[g.lr]) s[g.lr].lr++;
+          if (g.la && s[g.la]) s[g.la].la++;
+        });
+        vP().forEach((p) => {
+          const x = s[p.id];
+          x.wr = x.games > 0 ? (x.wins / x.games) * 100 : 0;
+          x.avp = x.games > 0 ? x.tvp / x.games : 0;
+        });
+        return s;
+      }
+      function getDrought() {
+        const today = td();
+        const d = {};
+        vP().forEach((p) => {
+          const allWins = [
+            ...games.filter((g) => g.winner === p.id),
+            ...SEASON_HISTORY.filter(
+              (s) => s.champion === p.id && s.endDate,
+            ).map((s) => ({ date: s.endDate })),
+          ];
+          if (!allWins.length) {
+            // count all games they've played
+            const played = games.filter((g) => g.players.includes(p.id)).length;
+            d[p.id] = {
+              status: "nowins",
+              lastWin: null,
+              days: null,
+              gamesSince: played,
+            };
+            return;
+          }
+          const last = [...allWins].sort(
+            (a, b) => new Date(b.date) - new Date(a.date),
+          )[0];
+          // games this player played AFTER their last win date
+          const gamesSince = games.filter(
+            (g) => g.players.includes(p.id) && g.date > last.date,
+          ).length;
+          d[p.id] = {
+            status: "ok",
+            lastWin: last.date,
+            days: daysBetween(last.date, today),
+            gamesSince,
+          };
+        });
+        return d;
+      }
+      function getPositionStats() {
+        const std = {};
+        for (let i = 1; i <= 4; i++) std[i] = { wins: 0, games: 0 };
+        const exp = {};
+        for (let i = 1; i <= 6; i++) exp[i] = { wins: 0, games: 0 };
+        const visIds = new Set(vP().map((p) => p.id));
+        games.forEach((g) => {
+          const activePlayers = g.players.filter((id) => visIds.has(id));
+          const n = activePlayers.length;
+          const bucket = n >= 5 ? exp : std;
+          const maxPos = n >= 5 ? 6 : 4;
+          for (let i = 1; i <= Math.min(n, maxPos); i++) {
+            if (bucket[i]) bucket[i].games++;
+          }
+          if (
+            g.winner &&
+            visIds.has(g.winner) &&
+            g.startPositions &&
+            g.startPositions[g.winner]
+          ) {
+            const sp = g.startPositions[g.winner];
+            if (bucket[sp] !== undefined) bucket[sp].wins++;
+          }
+        });
+        return { std, exp };
+      }
 
-let games=[
-  {id:'s6g1',date:'2026-01-25',season:6,incomplete:true, players:['andrew'],                        winner:'andrew',vp:{},lr:null,la:null,startPositions:{},host:null,notes:''},
-  {id:'s6g2',date:'2026-02-20',season:6,incomplete:true, players:['krupka'],                        winner:'krupka',vp:{},lr:null,la:null,startPositions:{},host:null,notes:''},
-  {id:'s6g3',date:'2026-03-12',season:6,incomplete:true, players:['lance'],                         winner:'lance', vp:{},lr:null,la:null,startPositions:{},host:null,notes:''},
-  {id:'s6g4',date:'2026-04-02',season:6,incomplete:false,players:['nicko','krupka','andrew','lance'],winner:'lance', vp:{},lr:null,la:'lance',startPositions:{lance:1},host:'krupka',notes:'Cooked chicken on the Traeger.'},
-];
+      /* ─── PILL ─── */
+      function pillHTML(id, game) {
+        const p = gp(id);
+        if (!p) return "";
+        if (p.fillIn && hideFillIns) return "";
+        const sp = game.startPositions?.[id];
+        const isW = game.winner === id;
+        const isLA = game.la === id;
+        const isLR = game.lr === id;
+        if (p.fillIn) {
+          return `<span class="pill pill-fi"><span class="dot dot-fi" style="background:var(--fi-grad)"></span>${p.name} <span class="fillin-badge">FI</span>${sp ? ` <span class="badge badge-gold">P${sp}</span>` : ""}${isW ? ' <span class="badge badge-win">W</span>' : ""}${isLA ? ' <span class="badge badge-la">LA</span>' : ""}${isLR ? ' <span class="badge badge-lr">LR</span>' : ""}</span>`;
+        }
+        return `<span class="pill" style="background:color-mix(in srgb,${p.hex} 12%,#0a0600);color:color-mix(in srgb,${p.hex} 80%,#e8d5a3);border:1px solid color-mix(in srgb,${p.hex} 25%,transparent)"><span class="dot" style="background:${p.hex};box-shadow:0 0 4px ${p.hex}"></span>${p.name}${sp ? ` <span class="badge badge-gold">P${sp}</span>` : ""}${isW ? ' <span class="badge badge-win">W</span>' : ""}${isLA ? ' <span class="badge badge-la">LA</span>' : ""}${isLR ? ' <span class="badge badge-lr">LR</span>' : ""}</span>`;
+      }
 
-/* ─── FILL-IN FILTER ─── */
-let hideFillIns=false;
-function vP(){return hideFillIns?P.filter(p=>!p.fillIn):P;}
-function setFilter(hide){
-  hideFillIns=hide;
-  document.getElementById('fb-all').classList.toggle('active',!hide);
-  document.getElementById('fb-core').classList.toggle('active',hide);
-  // hide the fill-in section label + grid on overview when core-only
-  render();
-}
-function td(){return new Date().toISOString().slice(0,10);}
-function gp(id){return P.find(p=>p.id===id)||null;}
-function fmtDate(d){return new Date(d+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}
-function daysBetween(d1,d2){return Math.round(Math.abs(new Date(d2+'T12:00:00')-new Date(d1+'T12:00:00'))/86400000);}
-function getSeasonWins(s){const w={};vP().forEach(p=>w[p.id]=0);games.filter(g=>g.season===s).forEach(g=>{if(g.winner&&w[g.winner]!==undefined)w[g.winner]++;});return w;}
-function getAllTimeWins(){const w={};vP().forEach(p=>w[p.id]=0);games.forEach(g=>{if(g.winner&&w[g.winner]!==undefined)w[g.winner]++;});return w;}
-function getChampCounts(){const c={};vP().forEach(p=>c[p.id]=0);SEASON_HISTORY.forEach(s=>{if(s.champion&&c[s.champion]!==undefined)c[s.champion]++;});return c;}
-function calcStats(){
-  const s={};vP().forEach(p=>s[p.id]={games:0,wins:0,tvp:0,lr:0,la:0});
-  games.forEach(g=>{
-    g.players.forEach(id=>{if(s[id]){s[id].games++;s[id].tvp+=(g.vp[id]||0);}});
-    if(g.winner&&s[g.winner])s[g.winner].wins++;
-    if(g.lr&&s[g.lr])s[g.lr].lr++;
-    if(g.la&&s[g.la])s[g.la].la++;
-  });
-  vP().forEach(p=>{const x=s[p.id];x.wr=x.games>0?x.wins/x.games*100:0;x.avp=x.games>0?x.tvp/x.games:0;});
-  return s;
-}
-function getDrought(){
-  const today=td();const d={};
-  vP().forEach(p=>{
-    const allWins=[...games.filter(g=>g.winner===p.id),...SEASON_HISTORY.filter(s=>s.champion===p.id&&s.endDate).map(s=>({date:s.endDate}))];
-    if(!allWins.length){
-      // count all games they've played
-      const played=games.filter(g=>g.players.includes(p.id)).length;
-      d[p.id]={status:'nowins',lastWin:null,days:null,gamesSince:played};
-      return;
-    }
-    const last=[...allWins].sort((a,b)=>new Date(b.date)-new Date(a.date))[0];
-    // games this player played AFTER their last win date
-    const gamesSince=games.filter(g=>g.players.includes(p.id)&&g.date>last.date).length;
-    d[p.id]={status:'ok',lastWin:last.date,days:daysBetween(last.date,today),gamesSince};
-  });
-  return d;
-}
-function getPositionStats(){
-  const std={};for(let i=1;i<=4;i++)std[i]={wins:0,games:0};
-  const exp={};for(let i=1;i<=6;i++)exp[i]={wins:0,games:0};
-  const visIds=new Set(vP().map(p=>p.id));
-  games.forEach(g=>{
-    const activePlayers=g.players.filter(id=>visIds.has(id));
-    const n=activePlayers.length;
-    const bucket=n>=5?exp:std;
-    const maxPos=n>=5?6:4;
-    for(let i=1;i<=Math.min(n,maxPos);i++){if(bucket[i])bucket[i].games++;}
-    if(g.winner&&visIds.has(g.winner)&&g.startPositions&&g.startPositions[g.winner]){
-      const sp=g.startPositions[g.winner];
-      if(bucket[sp]!==undefined)bucket[sp].wins++;
-    }
-  });
-  return{std,exp};
-}
+      /* ─── RACE CHART ─── */
+      let raceMode = "s6";
+      function renderRace(cid) {
+        const wins = raceMode === "s6" ? getSeasonWins(6) : getAllTimeWins();
+        const maxW = Math.max(...Object.values(wins), 1);
+        const sorted = [...vP()].sort(
+          (a, b) => (wins[b.id] || 0) - (wins[a.id] || 0),
+        );
+        document.getElementById(cid).innerHTML = sorted
+          .map((p) => {
+            const w = wins[p.id] || 0;
+            const pct = w > 0 ? Math.max((w / maxW) * 100, 5) : 0;
+            if (p.fillIn) {
+              return `<div class="bar-row"><span class="dot bar-dot dot-fi" style="background:var(--fi-grad)"></span><span class="bar-name" style="color:var(--text3)">${p.name} <span class="fillin-badge">FI</span></span><div class="bar-track"><div class="bar-fill bar-fill-fi" style="width:${pct}%"></div></div><span class="bar-num" style="color:${w > 0 ? "var(--text2)" : "var(--text3)"}">${w}</span></div>`;
+            }
+            return `<div class="bar-row"><span class="dot bar-dot" style="background:${p.hex};box-shadow:0 0 4px ${p.hex}"></span><span class="bar-name">${p.name}</span><div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:linear-gradient(90deg,${p.hex}cc,${p.hex});box-shadow:${w > 0 ? `0 0 8px ${p.hex}66` : ""}"></div></div><span class="bar-num" style="color:${w > 0 ? p.hex : "var(--text3)"}">${w}</span></div>`;
+          })
+          .join("");
+      }
 
-/* ─── PILL ─── */
-function pillHTML(id,game){
-  const p=gp(id);if(!p)return'';
-  if(p.fillIn&&hideFillIns)return'';
-  const sp=game.startPositions?.[id];
-  const isW=game.winner===id;
-  const isLA=game.la===id;
-  const isLR=game.lr===id;
-  if(p.fillIn){
-    return`<span class="pill pill-fi"><span class="dot dot-fi" style="background:var(--fi-grad)"></span>${p.name} <span class="fillin-badge">FI</span>${sp?` <span class="badge badge-gold">P${sp}</span>`:''}${isW?' <span class="badge badge-win">W</span>':''}${isLA?' <span class="badge badge-la">LA</span>':''}${isLR?' <span class="badge badge-lr">LR</span>':''}</span>`;
-  }
-  return`<span class="pill" style="background:color-mix(in srgb,${p.hex} 12%,#0a0600);color:color-mix(in srgb,${p.hex} 80%,#e8d5a3);border:1px solid color-mix(in srgb,${p.hex} 25%,transparent)"><span class="dot" style="background:${p.hex};box-shadow:0 0 4px ${p.hex}"></span>${p.name}${sp?` <span class="badge badge-gold">P${sp}</span>`:''}${isW?' <span class="badge badge-win">W</span>':''}${isLA?' <span class="badge badge-la">LA</span>':''}${isLR?' <span class="badge badge-lr">LR</span>':''}</span>`;
-}
+      /* ─── OVERVIEW ─── */
+      function renderOverview() {
+        const el = document.getElementById("tab-overview");
+        const stats = calcStats();
+        const champ = getChampCounts();
+        const drought = getDrought();
 
-/* ─── RACE CHART ─── */
-let raceMode='s6';
-function renderRace(cid){
-  const wins=raceMode==='s6'?getSeasonWins(6):getAllTimeWins();
-  const maxW=Math.max(...Object.values(wins),1);
-  const sorted=[...vP()].sort((a,b)=>(wins[b.id]||0)-(wins[a.id]||0));
-  document.getElementById(cid).innerHTML=sorted.map(p=>{
-    const w=wins[p.id]||0;
-    const pct=w>0?Math.max(w/maxW*100,5):0;
-    if(p.fillIn){
-      return`<div class="bar-row"><span class="dot bar-dot dot-fi" style="background:var(--fi-grad)"></span><span class="bar-name" style="color:var(--text3)">${p.name} <span class="fillin-badge">FI</span></span><div class="bar-track"><div class="bar-fill bar-fill-fi" style="width:${pct}%"></div></div><span class="bar-num" style="color:${w>0?'var(--text2)':'var(--text3)'}">${w}</span></div>`;
-    }
-    return`<div class="bar-row"><span class="dot bar-dot" style="background:${p.hex};box-shadow:0 0 4px ${p.hex}"></span><span class="bar-name">${p.name}</span><div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:linear-gradient(90deg,${p.hex}cc,${p.hex});box-shadow:${w>0?`0 0 8px ${p.hex}66`:''}"></div></div><span class="bar-num" style="color:${w>0?p.hex:'var(--text3)'}">${w}</span></div>`;
-  }).join('');
-}
-
-/* ─── OVERVIEW ─── */
-function renderOverview(){
-  const el=document.getElementById('tab-overview');
-  const stats=calcStats();const champ=getChampCounts();const drought=getDrought();
-
-  function pcardHTML(p){
-    const s=stats[p.id];const d=drought[p.id];const titles=champ[p.id];
-    let drStr='No wins yet',drCls='drought-hot';
-    if(d.status==='ok'){
-      if(d.days===0){drStr='Today!';drCls='drought-ok';}
-      else if(d.days<=14){drStr=d.days+'d ago';drCls='drought-ok';}
-      else if(d.days<=60){drStr=d.days+'d ago';drCls='drought-med';}
-      else{drStr=d.days+'d ago';drCls='drought-hot';}
-    }
-    if(p.fillIn){
-      return`<div class="pcard" style="--pc-color:#555;--pc-glow:rgba(255,255,255,0.08)">
+        function pcardHTML(p) {
+          const s = stats[p.id];
+          const d = drought[p.id];
+          const titles = champ[p.id];
+          let drStr = "No wins yet",
+            drCls = "drought-hot";
+          if (d.status === "ok") {
+            if (d.days === 0) {
+              drStr = "Today!";
+              drCls = "drought-ok";
+            } else if (d.days <= 14) {
+              drStr = d.days + "d ago";
+              drCls = "drought-ok";
+            } else if (d.days <= 60) {
+              drStr = d.days + "d ago";
+              drCls = "drought-med";
+            } else {
+              drStr = d.days + "d ago";
+              drCls = "drought-hot";
+            }
+          }
+          if (p.fillIn) {
+            return `<div class="pcard" style="--pc-color:#555;--pc-glow:rgba(255,255,255,0.08)">
         <div class="pcard-fi-bar"></div>
         <div class="pcard-avatar avatar-fi" style="color:#fff;font-size:.7rem">${p.initial}</div>        <div class="pcard-name">${p.name} <span class="fillin-badge">Fill-in</span></div>
-        <div class="pcard-stat"><span class="pcard-stat-label">Win Rate</span><span class="pcard-stat-val">${s.games>0?s.wr.toFixed(0)+'%':'—'}</span></div>
+        <div class="pcard-stat"><span class="pcard-stat-label">Win Rate</span><span class="pcard-stat-val">${s.games > 0 ? s.wr.toFixed(0) + "%" : "—"}</span></div>
         <div class="pcard-stat"><span class="pcard-stat-label">Wins / Games</span><span class="pcard-stat-val">${s.wins} / ${s.games}</span></div>
         <div class="drought-badge ${drCls}">${drStr}</div>
       </div>`;
-    }
-    return`<div class="pcard" style="--pc-color:${p.hex};--pc-glow:${p.hex}33">
-      ${p.img
-        ? `<div class="pcard-avatar" style="background:${p.hex}22;border:2px solid ${p.hex};box-shadow:0 0 16px ${p.hex}44;padding:0;overflow:hidden"><img src="${p.img}" style="width:100%;height:100%;object-fit:cover;object-position:center center;display:block;border-radius:50%"></div>`
-        : `<div class="pcard-avatar" style="background:${p.hex}22;color:${p.hex};border:1px solid ${p.hex}44;box-shadow:0 0 16px ${p.hex}22">${p.initial}</div>`
+          }
+          return `<div class="pcard" style="--pc-color:${p.hex};--pc-glow:${p.hex}33">
+      ${
+        p.img
+          ? `<div class="pcard-avatar" style="background:${p.hex}22;border:2px solid ${p.hex};box-shadow:0 0 16px ${p.hex}44;padding:0;overflow:hidden"><img src="${p.img}" style="width:100%;height:100%;object-fit:cover;object-position:center center;display:block;border-radius:50%"></div>`
+          : `<div class="pcard-avatar" style="background:${p.hex}22;color:${p.hex};border:1px solid ${p.hex}44;box-shadow:0 0 16px ${p.hex}22">${p.initial}</div>`
       }
-      <div class="pcard-name">${p.name}${titles>0?` <span style="font-size:.7rem;color:var(--gold2)">👑×${titles}</span>`:''}</div>
+      <div class="pcard-name">${p.name}${titles > 0 ? ` <span style="font-size:.7rem;color:var(--gold2)">👑×${titles}</span>` : ""}</div>
       <div style="display:flex;align-items:baseline;gap:5px;margin:6px 0 2px;">
-        <span style="font-family:'Cinzel Decorative',serif;font-size:1.6rem;font-weight:700;color:${s.wins>0?p.hex:'var(--text3)'};line-height:1;text-shadow:${s.wins>0?`0 0 20px ${p.hex}88`:'none'}">${s.wins}</span>
-        <span style="font-family:'Cinzel',serif;font-size:.6rem;color:var(--text3);letter-spacing:.08em">S${CURRENT_SEASON} WIN${s.wins!==1?'S':''}</span>
+        <span style="font-family:'Cinzel Decorative',serif;font-size:1.6rem;font-weight:700;color:${s.wins > 0 ? p.hex : "var(--text3)"};line-height:1;text-shadow:${s.wins > 0 ? `0 0 20px ${p.hex}88` : "none"}">${s.wins}</span>
+        <span style="font-family:'Cinzel',serif;font-size:.6rem;color:var(--text3);letter-spacing:.08em">S${CURRENT_SEASON} WIN${s.wins !== 1 ? "S" : ""}</span>
       </div>
-      <div class="pcard-stat" style="margin-top:4px"><span class="pcard-stat-label">Win Rate</span><span class="pcard-stat-val" style="${s.wins>0?`color:${p.hex}`:''}"> ${s.games>0?s.wr.toFixed(0)+'%':'—'}</span></div>
+      <div class="pcard-stat" style="margin-top:4px"><span class="pcard-stat-label">Win Rate</span><span class="pcard-stat-val" style="${s.wins > 0 ? `color:${p.hex}` : ""}"> ${s.games > 0 ? s.wr.toFixed(0) + "%" : "—"}</span></div>
       <div class="pcard-stat"><span class="pcard-stat-label">Games</span><span class="pcard-stat-val">${s.games}</span></div>
       <div class="drought-badge ${drCls}">${drStr}</div>
     </div>`;
-  }
+        }
 
-  const regulars=P.filter(p=>!p.fillIn);
-  const fillIns=P.filter(p=>p.fillIn);
-  const seasonWins=getSeasonWins(CURRENT_SEASON);
-  const sortedRegulars=[...regulars].sort((a,b)=>(seasonWins[b.id]||0)-(seasonWins[a.id]||0));
-  const cardsHTML=sortedRegulars.map(pcardHTML).join('');
-  const fillInHTML=hideFillIns?'':fillIns.map(pcardHTML).join('');
+        const regulars = P.filter((p) => !p.fillIn);
+        const fillIns = P.filter((p) => p.fillIn);
+        const seasonWins = getSeasonWins(CURRENT_SEASON);
+        const sortedRegulars = [...regulars].sort(
+          (a, b) => (seasonWins[b.id] || 0) - (seasonWins[a.id] || 0),
+        );
+        const cardsHTML = sortedRegulars.map(pcardHTML).join("");
+        const fillInHTML = hideFillIns ? "" : fillIns.map(pcardHTML).join("");
 
-  // position stats
-  const {std,exp}=getPositionStats();
-  const stdTotal=games.filter(g=>g.players.length<=4&&g.winner&&g.startPositions&&g.startPositions[g.winner]).length;
-  const expTotal=games.filter(g=>g.players.length>=5&&g.winner&&g.startPositions&&g.startPositions[g.winner]).length;
+        // position stats
+        const { std, exp } = getPositionStats();
+        const stdTotal = games.filter(
+          (g) =>
+            g.players.length <= 4 &&
+            g.winner &&
+            g.startPositions &&
+            g.startPositions[g.winner],
+        ).length;
+        const expTotal = games.filter(
+          (g) =>
+            g.players.length >= 5 &&
+            g.winner &&
+            g.startPositions &&
+            g.startPositions[g.winner],
+        ).length;
 
-  function posCardHTML(data,positions){
-    return positions.map(i=>{
-      const d=data[i]||{wins:0,games:0};
-      const wr=d.games>0?(d.wins/d.games*100).toFixed(0)+'%':'—';
-      const hot=d.games>0&&d.wins/d.games>=0.3;
-      return`<div class="pos-card" style="${hot?'border-color:rgba(201,146,42,0.4)':''}">
-        <div class="pos-num" style="${hot?'color:var(--gold3)':''}">${i}</div>
-        <div class="pos-wins">${d.wins}W / ${d.games}G<br><span style="color:${d.games>0?'var(--gold2)':'var(--text3)'}">${wr}</span></div>
+        function posCardHTML(data, positions) {
+          return positions
+            .map((i) => {
+              const d = data[i] || { wins: 0, games: 0 };
+              const wr =
+                d.games > 0 ? ((d.wins / d.games) * 100).toFixed(0) + "%" : "—";
+              const hot = d.games > 0 && d.wins / d.games >= 0.3;
+              return `<div class="pos-card" style="${hot ? "border-color:rgba(201,146,42,0.4)" : ""}">
+        <div class="pos-num" style="${hot ? "color:var(--gold3)" : ""}">${i}</div>
+        <div class="pos-wins">${d.wins}W / ${d.games}G<br><span style="color:${d.games > 0 ? "var(--gold2)" : "var(--text3)"}">${wr}</span></div>
       </div>`;
-    }).join('');
-  }
+            })
+            .join("");
+        }
 
-  el.innerHTML=`
+        el.innerHTML = `
     <div class="section-label">The Settlers</div>
     <div class="pgrid">${cardsHTML}</div>
 
-    ${!hideFillIns?`<div class="section-label">Fill-in Players</div><div class="pgrid">${fillInHTML}</div>`:''}
+    ${!hideFillIns ? `<div class="section-label">Fill-in Players</div><div class="pgrid">${fillInHTML}</div>` : ""}
 
     <div class="section-label">Win Race</div>
     <div class="card">
       <div class="race-toggle">
-        <button class="rtbtn ${raceMode==='s6'?'active':''}" id="rtbtn-s6" onclick="raceMode='s6';renderRace('race-ov');toggleRace()">Season VI</button>
-        <button class="rtbtn ${raceMode==='all'?'active':''}" id="rtbtn-at" onclick="raceMode='all';renderRace('race-ov');toggleRace()">All Time</button>
+        <button class="rtbtn ${raceMode === "s6" ? "active" : ""}" id="rtbtn-s6" onclick="raceMode='s6';renderRace('race-ov');toggleRace()">Season VI</button>
+        <button class="rtbtn ${raceMode === "all" ? "active" : ""}" id="rtbtn-at" onclick="raceMode='all';renderRace('race-ov');toggleRace()">All Time</button>
       </div>
       <div id="race-ov"></div>
     </div>
@@ -835,16 +1725,16 @@ function renderOverview(){
           <div class="pos-two-col">
             <div>
               <div class="pos-game-type">⚔️ Standard · ≤4 players</div>
-              <div class="pos-grid">${posCardHTML(std,[1,2,3,4])}</div>
+              <div class="pos-grid">${posCardHTML(std, [1, 2, 3, 4])}</div>
               <div style="font-size:.6rem;color:var(--text3);margin-top:6px;font-style:italic">
-                ${stdTotal} recorded game${stdTotal!==1?'s':''}
+                ${stdTotal} recorded game${stdTotal !== 1 ? "s" : ""}
               </div>
             </div>
             <div>
               <div class="pos-game-type">🗺 Expansion · 5+ players</div>
-              <div class="pos-grid-6">${posCardHTML(exp,[1,2,3,4,5,6])}</div>
+              <div class="pos-grid-6">${posCardHTML(exp, [1, 2, 3, 4, 5, 6])}</div>
               <div style="font-size:.6rem;color:var(--text3);margin-top:6px;font-style:italic">
-                ${expTotal} recorded game${expTotal!==1?'s':''}
+                ${expTotal} recorded game${expTotal !== 1 ? "s" : ""}
               </div>
             </div>
           </div>
@@ -852,186 +1742,246 @@ function renderOverview(){
       </div>
     </div>`;
 
-  renderRace('race-ov');
+        renderRace("race-ov");
 
-  const ds=[...vP()].sort((a,b)=>{
-    const da=drought[a.id],db=drought[b.id];
-    if(!da||!db)return 0;
-    const va=da.status==='ok'?da.days:9999;
-    const vb=db.status==='ok'?db.days:9999;
-    return vb-va;
-  });
-  document.getElementById('drought-tbody').innerHTML=ds.map(p=>{
-    const d=drought[p.id];
-    if(!d)return'';
-    let lw='—',dsv='—',cls='',gsv='—';
-    if(d.status==='ok'){
-      lw=fmtDate(d.lastWin);
-      dsv=d.days===0?'Today!':d.days+'d';
-      cls=d.days>=60?'drought-hot':d.days<=14?'drought-ok':'drought-med';
-      gsv=d.gamesSince>0?`${d.gamesSince}`:'—';
-    } else {
-      lw='Never won';
-      dsv='—';
-      cls='drought-hot';
-      gsv=d.gamesSince>0?`${d.gamesSince}`:'—';
-    }
-    return`<tr><td><span class="dot dot-glow${p.fillIn?' dot-fi':''}" style="${p.fillIn?'background:var(--fi-grad)':'background:'+p.hex+';color:'+p.hex+'66'};margin-right:6px"></span><span style="font-family:'Cinzel',serif;font-size:.74rem">${p.name}${p.fillIn?' <span class="fillin-badge">FI</span>':''}</span></td><td style="color:var(--text3);font-size:.7rem">${lw}</td><td class="${cls}" style="font-family:'Cinzel',serif;font-size:.74rem">${dsv}</td><td class="${cls}" style="font-family:'Cinzel',serif;font-size:.74rem">${gsv}</td></tr>`;
-  }).join('');
-}
-function toggleRace(){
-  document.getElementById('rtbtn-s6').classList.toggle('active',raceMode==='s6');
-  document.getElementById('rtbtn-at').classList.toggle('active',raceMode==='all');
-}
+        const ds = [...vP()].sort((a, b) => {
+          const da = drought[a.id],
+            db = drought[b.id];
+          if (!da || !db) return 0;
+          const va = da.status === "ok" ? da.days : 9999;
+          const vb = db.status === "ok" ? db.days : 9999;
+          return vb - va;
+        });
+        document.getElementById("drought-tbody").innerHTML = ds
+          .map((p) => {
+            const d = drought[p.id];
+            if (!d) return "";
+            let lw = "—",
+              dsv = "—",
+              cls = "",
+              gsv = "—";
+            if (d.status === "ok") {
+              lw = fmtDate(d.lastWin);
+              dsv = d.days === 0 ? "Today!" : d.days + "d";
+              cls =
+                d.days >= 60
+                  ? "drought-hot"
+                  : d.days <= 14
+                    ? "drought-ok"
+                    : "drought-med";
+              gsv = d.gamesSince > 0 ? `${d.gamesSince}` : "—";
+            } else {
+              lw = "Never won";
+              dsv = "—";
+              cls = "drought-hot";
+              gsv = d.gamesSince > 0 ? `${d.gamesSince}` : "—";
+            }
+            return `<tr><td><span class="dot dot-glow${p.fillIn ? " dot-fi" : ""}" style="${p.fillIn ? "background:var(--fi-grad)" : "background:" + p.hex + ";color:" + p.hex + "66"};margin-right:6px"></span><span style="font-family:'Cinzel',serif;font-size:.74rem">${p.name}${p.fillIn ? ' <span class="fillin-badge">FI</span>' : ""}</span></td><td style="color:var(--text3);font-size:.7rem">${lw}</td><td class="${cls}" style="font-family:'Cinzel',serif;font-size:.74rem">${dsv}</td><td class="${cls}" style="font-family:'Cinzel',serif;font-size:.74rem">${gsv}</td></tr>`;
+          })
+          .join("");
+      }
+      function toggleRace() {
+        document
+          .getElementById("rtbtn-s6")
+          .classList.toggle("active", raceMode === "s6");
+        document
+          .getElementById("rtbtn-at")
+          .classList.toggle("active", raceMode === "all");
+      }
 
-/* ─── SEASON 6 ─── */
-function renderS6(){
-  const el=document.getElementById('tab-s6');
-  const s6=games.filter(g=>g.season===6).sort((a,b)=>new Date(b.date)-new Date(a.date));
-  const wins=getSeasonWins(6);
-  const sorted=[...vP()].filter(p=>wins[p.id]>0).sort((a,b)=>wins[b.id]-wins[a.id]);
+      /* ─── SEASON 6 ─── */
+      function renderS6() {
+        const el = document.getElementById("tab-s6");
+        const s6 = games
+          .filter((g) => g.season === 6)
+          .sort((a, b) => new Date(b.date) - new Date(a.date));
+        const wins = getSeasonWins(6);
+        const sorted = [...vP()]
+          .filter((p) => wins[p.id] > 0)
+          .sort((a, b) => wins[b.id] - wins[a.id]);
 
-  const standingsHTML=sorted.length?sorted.map((p,i)=>{
-    const w=wins[p.id];
-    return`<div class="standings-row">
-      <span class="standings-rank">${i+1}.</span>
-      <span class="standings-pip${p.fillIn?' dot-fi':''}" style="${p.fillIn?'background:var(--fi-grad)':'background:'+p.hex+';box-shadow:0 0 6px '+p.hex}"></span>
-      <span class="standings-name" style="color:${p.fillIn?'var(--text2)':p.hex}">${p.name}${p.fillIn?' <span class="fillin-badge">FI</span>':''}</span>
-      <span class="standings-wins">${w} win${w!==1?'s':''}</span>
+        const standingsHTML = sorted.length
+          ? sorted
+              .map((p, i) => {
+                const w = wins[p.id];
+                return `<div class="standings-row">
+      <span class="standings-rank">${i + 1}.</span>
+      <span class="standings-pip${p.fillIn ? " dot-fi" : ""}" style="${p.fillIn ? "background:var(--fi-grad)" : "background:" + p.hex + ";box-shadow:0 0 6px " + p.hex}"></span>
+      <span class="standings-name" style="color:${p.fillIn ? "var(--text2)" : p.hex}">${p.name}${p.fillIn ? ' <span class="fillin-badge">FI</span>' : ""}</span>
+      <span class="standings-wins">${w} win${w !== 1 ? "s" : ""}</span>
     </div>`;
-  }).join(''):'<div class="empty-state">No wins recorded yet</div>';
+              })
+              .join("")
+          : '<div class="empty-state">No wins recorded yet</div>';
 
-  const gamesHTML=s6.map(g=>{
-    const p=gp(g.winner);
-    const winnerColor=p?(p.fillIn?'var(--text2)':p.hex):'var(--gold2)';
-    const hostP=g.host?gp(g.host):null;
-    return`<div class="game-card">
+        const gamesHTML = s6
+          .map((g) => {
+            const p = gp(g.winner);
+            const winnerColor = p
+              ? p.fillIn
+                ? "var(--text2)"
+                : p.hex
+              : "var(--gold2)";
+            const hostP = g.host ? gp(g.host) : null;
+            return `<div class="game-card">
       <div class="game-card-header">
         <span class="game-id">${g.id.toUpperCase()}</span>
         <span>${fmtDate(g.date)}</span>
-        ${g.incomplete?'<span class="incomplete-tag">Partial Data</span>':''}
+        ${g.incomplete ? '<span class="incomplete-tag">Partial Data</span>' : ""}
       </div>
       <div class="game-winner-row">
         <span class="winner-crown">👑</span>
-        <span class="winner-name" style="color:${winnerColor}">${p?p.name:g.winner}</span>
+        <span class="winner-name" style="color:${winnerColor}">${p ? p.name : g.winner}</span>
         <span style="font-size:.68rem;color:var(--text3);margin-left:4px">wins</span>
       </div>
-      <div class="game-pills">${g.players.map(id=>pillHTML(id,g)).join('')}</div>
+      <div class="game-pills">${g.players.map((id) => pillHTML(id, g)).join("")}</div>
       <div class="game-meta">
-        ${hostP?`<span>🏠 ${hostP.name}</span>`:''}
-        ${g.la?`<span>⚔️ Longest Army: <span style="color:${gp(g.la)?.hex||'var(--gold2)'}">${gp(g.la)?.name||g.la}</span></span>`:''}
-        ${g.lr?`<span>🛤 Longest Road: <span style="color:${gp(g.lr)?.hex||'var(--gold2)'}">${gp(g.lr)?.name||g.lr}</span></span>`:''}
+        ${hostP ? `<span>🏠 ${hostP.name}</span>` : ""}
+        ${g.la ? `<span>⚔️ Longest Army: <span style="color:${gp(g.la)?.hex || "var(--gold2)"}">${gp(g.la)?.name || g.la}</span></span>` : ""}
+        ${g.lr ? `<span>🛤 Longest Road: <span style="color:${gp(g.lr)?.hex || "var(--gold2)"}">${gp(g.lr)?.name || g.lr}</span></span>` : ""}
       </div>
-      ${g.notes?`<div class="game-note">${g.notes}</div>`:''}
+      ${g.notes ? `<div class="game-note">${g.notes}</div>` : ""}
       <div class="game-card-actions">
         <button class="btn-edit-sm" onclick="openEdit('${g.id}')">✏ Edit</button>
         <button class="btn-del-sm" onclick="deleteGame('${g.id}')">🗑 Delete</button>
       </div>
     </div>`;
-  }).join('');
+          })
+          .join("");
 
-  el.innerHTML=`
+        el.innerHTML = `
     <div class="section-label">Season VI Standings</div>
     <div class="card" style="padding:0;overflow:hidden">${standingsHTML}</div>
 
     <div class="section-label">Season VI Games (${s6.length})</div>
     ${gamesHTML}`;
-}
+      }
 
-/* ─── CHAMPIONS ─── */
-function renderChampions(){
-  const el=document.getElementById('tab-champions');
-  const champ=getChampCounts();
+      /* ─── CHAMPIONS ─── */
+      function renderChampions() {
+        const el = document.getElementById("tab-champions");
+        const champ = getChampCounts();
 
-  const currentHTML=`<div class="champion-card current">
+        const currentHTML = `<div class="champion-card current">
     <div class="champ-season" style="color:var(--gold2)">VI</div>
     <div class="champ-icon">🗺️</div>
     <div class="champ-info">
       <div class="champ-name" style="color:var(--gold2)">In Progress</div>
-      <div class="champ-sub">Season 6 · ${games.filter(g=>g.season===6).length} games played</div>
+      <div class="champ-sub">Season 6 · ${games.filter((g) => g.season === 6).length} games played</div>
     </div>
     <span class="inprog">Live</span>
   </div>`;
 
-  const histHTML=SEASON_HISTORY.map(s=>{
-    const p=gp(s.champion);
-    return`<div class="champion-card">
-      <div class="champ-season">${['I','II','III','IV','V'][s.num-1]}</div>
+        const histHTML = SEASON_HISTORY.map((s) => {
+          const p = gp(s.champion);
+          return `<div class="champion-card">
+      <div class="champ-season">${["I", "II", "III", "IV", "V"][s.num - 1]}</div>
       <div class="champ-icon">🏆</div>
       <div class="champ-info">
-        <div class="champ-name" style="${p?`color:${p.hex}`:''}"> ${p?p.name:s.champion}</div>
-        <div class="champ-sub">Season ${s.num}${s.endDate?` · Ended ${fmtDate(s.endDate)}`:''}</div>
+        <div class="champ-name" style="${p ? `color:${p.hex}` : ""}"> ${p ? p.name : s.champion}</div>
+        <div class="champ-sub">Season ${s.num}${s.endDate ? ` · Ended ${fmtDate(s.endDate)}` : ""}</div>
       </div>
-      ${p?`<span class="champ-dot" style="background:${p.hex};box-shadow:0 0 8px ${p.hex}"></span>`:''}
+      ${p ? `<span class="champ-dot" style="background:${p.hex};box-shadow:0 0 8px ${p.hex}"></span>` : ""}
     </div>`;
-  }).join('');
+        }).join("");
 
-  const topP=[...vP()].filter(p=>champ[p.id]>0).sort((a,b)=>champ[b.id]-champ[a.id]);
-  const leaderHTML=topP.map((p,i)=>`
+        const topP = [...vP()]
+          .filter((p) => champ[p.id] > 0)
+          .sort((a, b) => champ[b.id] - champ[a.id]);
+        const leaderHTML = topP
+          .map(
+            (p, i) => `
     <div class="standings-row">
-      <span class="standings-rank">${['👑','🥈','🥉'][i]||`${i+1}.`}</span>
-      <span class="standings-pip${p.fillIn?' dot-fi':''}" style="${p.fillIn?'background:var(--fi-grad)':'background:'+p.hex+';box-shadow:0 0 6px '+p.hex}"></span>
-      <span class="standings-name" style="color:${p.fillIn?'var(--text2)':p.hex}">${p.name}</span>
-      <span class="standings-wins">${champ[p.id]} title${champ[p.id]!==1?'s':''}</span>
-    </div>`).join('');
+      <span class="standings-rank">${["👑", "🥈", "🥉"][i] || `${i + 1}.`}</span>
+      <span class="standings-pip${p.fillIn ? " dot-fi" : ""}" style="${p.fillIn ? "background:var(--fi-grad)" : "background:" + p.hex + ";box-shadow:0 0 6px " + p.hex}"></span>
+      <span class="standings-name" style="color:${p.fillIn ? "var(--text2)" : p.hex}">${p.name}</span>
+      <span class="standings-wins">${champ[p.id]} title${champ[p.id] !== 1 ? "s" : ""}</span>
+    </div>`,
+          )
+          .join("");
 
-  el.innerHTML=`
+        el.innerHTML = `
     <div class="section-label">Season Champions</div>
     ${currentHTML}${histHTML}
-    ${topP.length?`
+    ${
+      topP.length
+        ? `
     <div class="section-label" style="margin-top:8px">All-Time Titles</div>
-    <div class="card" style="padding:0;overflow:hidden">${leaderHTML}</div>`:''}`;
-}
+    <div class="card" style="padding:0;overflow:hidden">${leaderHTML}</div>`
+        : ""
+    }`;
+      }
 
-/* ─── HISTORY ─── */
-function renderHistory(){
-  const el=document.getElementById('tab-history');
-  const sorted=[...games].sort((a,b)=>new Date(b.date)-new Date(a.date));
+      /* ─── HISTORY ─── */
+      function renderHistory() {
+        const el = document.getElementById("tab-history");
+        const sorted = [...games].sort(
+          (a, b) => new Date(b.date) - new Date(a.date),
+        );
 
-  const rows=sorted.map(g=>{
-    const p=gp(g.winner);
-    const sp=g.winner&&g.startPositions?.[g.winner];
-    return`<tr>
+        const rows = sorted
+          .map((g) => {
+            const p = gp(g.winner);
+            const sp = g.winner && g.startPositions?.[g.winner];
+            return `<tr>
       <td style="color:var(--text3)">${fmtDate(g.date)}</td>
       <td><span class="season-badge">S${g.season}</span></td>
-      <td><span style="font-family:'Cinzel',serif;font-size:.78rem;color:${p?(p.fillIn?'var(--text2)':p.hex):'var(--text2)'}">
-        ${p?`<span class="dot dot-glow${p.fillIn?' dot-fi':''}" style="${p.fillIn?'background:var(--fi-grad)':'background:'+p.hex+';color:'+p.hex};margin-right:5px"></span>`:''}${p?p.name:g.winner||'—'}
+      <td><span style="font-family:'Cinzel',serif;font-size:.78rem;color:${p ? (p.fillIn ? "var(--text2)" : p.hex) : "var(--text2)"}">
+        ${p ? `<span class="dot dot-glow${p.fillIn ? " dot-fi" : ""}" style="${p.fillIn ? "background:var(--fi-grad)" : "background:" + p.hex + ";color:" + p.hex};margin-right:5px"></span>` : ""}${p ? p.name : g.winner || "—"}
       </span></td>
-      <td>${sp?`<span class="badge badge-gold">P${sp}</span>`:'<span style="color:var(--text3)">—</span>'}</td>
-      <td style="color:var(--text3)">${g.players.map(id=>{const pl=gp(id);return pl?`<span class="dot${pl.fillIn?' dot-fi':''}" style="${pl.fillIn?'background:var(--fi-grad)':'background:'+pl.hex};margin-right:2px"></span>`:''}).join('')}</td>
-      <td style="color:var(--text3);font-size:.7rem;font-style:italic">${g.notes||'—'}</td>
+      <td>${sp ? `<span class="badge badge-gold">P${sp}</span>` : '<span style="color:var(--text3)">—</span>'}</td>
+      <td style="color:var(--text3)">${g.players
+        .map((id) => {
+          const pl = gp(id);
+          return pl
+            ? `<span class="dot${pl.fillIn ? " dot-fi" : ""}" style="${pl.fillIn ? "background:var(--fi-grad)" : "background:" + pl.hex};margin-right:2px"></span>`
+            : "";
+        })
+        .join("")}</td>
+      <td style="color:var(--text3);font-size:.7rem;font-style:italic">${g.notes || "—"}</td>
       <td>
         <button class="btn-edit-sm" onclick="openEdit('${g.id}')" style="margin-right:4px">✏</button>
         <button class="btn-del-sm" onclick="deleteGame('${g.id}')">🗑</button>
       </td>
     </tr>`;
-  }).join('');
+          })
+          .join("");
 
-  el.innerHTML=`
+        el.innerHTML = `
     <div class="section-label">Full Game Log</div>
     <div class="card" style="padding:0;overflow:hidden;overflow-x:auto">
       <table class="htable">
         <thead><tr><th>Date</th><th>Season</th><th>Winner</th><th>Pick</th><th>Players</th><th>Notes</th><th></th></tr></thead>
-        <tbody>${rows||'<tr><td colspan="6" style="text-align:center;color:var(--text3);padding:24px">No games logged</td></tr>'}</tbody>
+        <tbody>${rows || '<tr><td colspan="6" style="text-align:center;color:var(--text3);padding:24px">No games logged</td></tr>'}</tbody>
       </table>
     </div>`;
-}
+      }
 
-/* ─── LOG GAME ─── */
-function renderLog(){
-  const el=document.getElementById('tab-log');
-  const pChecks=P.map(p=>`
+      /* ─── LOG GAME ─── */
+      function renderLog() {
+        const el = document.getElementById("tab-log");
+        const pChecks = P.map(
+          (p) => `
     <label class="player-check-label" id="pc-${p.id}" style="--pc-color:${p.hex};--pc-bg:${p.hex}18" onclick="togglePlayer('${p.id}')">
       <input type="checkbox" id="chk-${p.id}">
       <span class="player-dot" style="background:${p.hex};box-shadow:0 0 4px ${p.hex}"></span>
       ${p.name}
-    </label>`).join('');
+    </label>`,
+        ).join("");
 
-  const winnerOpts=P.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
-  const hostOpts='<option value="">— select —</option>'+P.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
-  const posOpts='<option value="">— none —</option>'+[1,2,3,4,5,6].map(i=>`<option value="${i}">Position ${i}</option>`).join('');
+        const winnerOpts = P.map(
+          (p) => `<option value="${p.id}">${p.name}</option>`,
+        ).join("");
+        const hostOpts =
+          '<option value="">— select —</option>' +
+          P.map((p) => `<option value="${p.id}">${p.name}</option>`).join("");
+        const posOpts =
+          '<option value="">— none —</option>' +
+          [1, 2, 3, 4, 5, 6]
+            .map((i) => `<option value="${i}">Position ${i}</option>`)
+            .join("");
 
-  el.innerHTML=`
+        el.innerHTML = `
     <div class="section-label">Chronicle a New Battle</div>
     <div class="card">
       <div class="form-grid">
@@ -1082,61 +2032,106 @@ function renderLog(){
         </div>
       </div>
     </div>`;
-}
+      }
 
-function togglePlayer(id){
-  const lbl=document.getElementById('pc-'+id);
-  const chk=document.getElementById('chk-'+id);
-  chk.checked=!chk.checked;
-  lbl.classList.toggle('checked',chk.checked);
-}
+      function togglePlayer(id) {
+        const lbl = document.getElementById("pc-" + id);
+        const chk = document.getElementById("chk-" + id);
+        chk.checked = !chk.checked;
+        lbl.classList.toggle("checked", chk.checked);
+      }
 
-function submitGame(){
-  const date=document.getElementById('f-date').value;
-  const season=parseInt(document.getElementById('f-season').value)||CURRENT_SEASON;
-  const winner=document.getElementById('f-winner').value;
-  const pos=document.getElementById('f-pos').value;
-  const la=document.getElementById('f-la').value||null;
-  const lr=document.getElementById('f-lr').value||null;
-  const host=document.getElementById('f-host').value||null;
-  const notes=document.getElementById('f-notes').value.trim();
-  const players=P.filter(p=>document.getElementById('chk-'+p.id)?.checked).map(p=>p.id);
-  if(!date||!winner){showToast('⚠ Date and winner are required!');return;}
-  const sp={};if(winner&&pos)sp[winner]=parseInt(pos);
-  const id=`s${season}g${Date.now()}`;
-  games.push({id,date,season,incomplete:false,players,winner,vp:{},lr,la,startPositions:sp,host,notes});
-  save();
-  showToast('👑 '+( gp(winner)?.name||winner)+' has been crowned!');
-  render();
-  // switch to s6
-  if(season===CURRENT_SEASON)activateTab('s6');
-}
+      function submitGame() {
+        const date = document.getElementById("f-date").value;
+        const season =
+          parseInt(document.getElementById("f-season").value) || CURRENT_SEASON;
+        const winner = document.getElementById("f-winner").value;
+        const pos = document.getElementById("f-pos").value;
+        const la = document.getElementById("f-la").value || null;
+        const lr = document.getElementById("f-lr").value || null;
+        const host = document.getElementById("f-host").value || null;
+        const notes = document.getElementById("f-notes").value.trim();
+        const players = P.filter(
+          (p) => document.getElementById("chk-" + p.id)?.checked,
+        ).map((p) => p.id);
+        if (!date || !winner) {
+          showToast("⚠ Date and winner are required!");
+          return;
+        }
+        const sp = {};
+        if (winner && pos) sp[winner] = parseInt(pos);
+        const id = `s${season}g${Date.now()}`;
+        games.push({
+          id,
+          date,
+          season,
+          incomplete: false,
+          players,
+          winner,
+          vp: {},
+          lr,
+          la,
+          startPositions: sp,
+          host,
+          notes,
+        });
+        save();
+        showToast("👑 " + (gp(winner)?.name || winner) + " has been crowned!");
+        render();
+        // switch to s6
+        if (season === CURRENT_SEASON) activateTab("s6");
+      }
 
-/* ─── EDIT / DELETE ─── */
-function openEdit(gameId){
-  const g=games.find(x=>x.id===gameId);
-  if(!g)return;
+      /* ─── EDIT / DELETE ─── */
+      function openEdit(gameId) {
+        const g = games.find((x) => x.id === gameId);
+        if (!g) return;
 
-  const pChecks=P.map(p=>{
-    const checked=g.players.includes(p.id);
-    return`<label class="player-check-label${checked?' checked':''}" id="epc-${p.id}" style="--pc-color:${p.hex};--pc-bg:${p.hex}18" onclick="eTogglePlayer('${p.id}')">
-      <input type="checkbox" id="echk-${p.id}"${checked?' checked':''}>
+        const pChecks = P.map((p) => {
+          const checked = g.players.includes(p.id);
+          return `<label class="player-check-label${checked ? " checked" : ""}" id="epc-${p.id}" style="--pc-color:${p.hex};--pc-bg:${p.hex}18" onclick="eTogglePlayer('${p.id}')">
+      <input type="checkbox" id="echk-${p.id}"${checked ? " checked" : ""}>
       <span class="player-dot" style="background:${p.hex};box-shadow:0 0 4px ${p.hex}"></span>
       ${p.name}
     </label>`;
-  }).join('');
+        }).join("");
 
-  const winnerOpts=P.map(p=>`<option value="${p.id}"${g.winner===p.id?' selected':''}>${p.name}</option>`).join('');
-  const hostOpts='<option value="">— select —</option>'+P.map(p=>`<option value="${p.id}"${g.host===p.id?' selected':''}>${p.name}</option>`).join('');
-  const posVal=g.winner&&g.startPositions?.[g.winner]||'';
-  const posOpts='<option value="">— none —</option>'+[1,2,3,4,5,6].map(i=>`<option value="${i}"${posVal==i?' selected':''}>${i}</option>`).join('');
-  const laOpts='<option value="">— none —</option>'+P.map(p=>`<option value="${p.id}"${g.la===p.id?' selected':''}>${p.name}</option>`).join('');
-  const lrOpts='<option value="">— none —</option>'+P.map(p=>`<option value="${p.id}"${g.lr===p.id?' selected':''}>${p.name}</option>`).join('');
+        const winnerOpts = P.map(
+          (p) =>
+            `<option value="${p.id}"${g.winner === p.id ? " selected" : ""}>${p.name}</option>`,
+        ).join("");
+        const hostOpts =
+          '<option value="">— select —</option>' +
+          P.map(
+            (p) =>
+              `<option value="${p.id}"${g.host === p.id ? " selected" : ""}>${p.name}</option>`,
+          ).join("");
+        const posVal = (g.winner && g.startPositions?.[g.winner]) || "";
+        const posOpts =
+          '<option value="">— none —</option>' +
+          [1, 2, 3, 4, 5, 6]
+            .map(
+              (i) =>
+                `<option value="${i}"${posVal == i ? " selected" : ""}>${i}</option>`,
+            )
+            .join("");
+        const laOpts =
+          '<option value="">— none —</option>' +
+          P.map(
+            (p) =>
+              `<option value="${p.id}"${g.la === p.id ? " selected" : ""}>${p.name}</option>`,
+          ).join("");
+        const lrOpts =
+          '<option value="">— none —</option>' +
+          P.map(
+            (p) =>
+              `<option value="${p.id}"${g.lr === p.id ? " selected" : ""}>${p.name}</option>`,
+          ).join("");
 
-  const modal=document.createElement('div');
-  modal.className='modal-overlay';
-  modal.id='edit-modal';
-  modal.innerHTML=`
+        const modal = document.createElement("div");
+        modal.className = "modal-overlay";
+        modal.id = "edit-modal";
+        modal.innerHTML = `
     <div class="modal">
       <div class="modal-title">
         ✍️ Edit Game
@@ -1183,7 +2178,7 @@ function openEdit(gameId){
         </div>
         <div class="form-group">
           <label class="form-label">Notes</label>
-          <textarea class="form-textarea" id="ef-notes">${g.notes||''}</textarea>
+          <textarea class="form-textarea" id="ef-notes">${g.notes || ""}</textarea>
         </div>
       </div>
       <div class="modal-actions">
@@ -1193,87 +2188,124 @@ function openEdit(gameId){
       </div>
     </div>`;
 
-  // close on overlay click
-  modal.addEventListener('click',e=>{if(e.target===modal)closeEdit();});
-  document.body.appendChild(modal);
-}
+        // close on overlay click
+        modal.addEventListener("click", (e) => {
+          if (e.target === modal) closeEdit();
+        });
+        document.body.appendChild(modal);
+      }
 
-function closeEdit(){
-  document.getElementById('edit-modal')?.remove();
-}
+      function closeEdit() {
+        document.getElementById("edit-modal")?.remove();
+      }
 
-function eTogglePlayer(id){
-  const lbl=document.getElementById('epc-'+id);
-  const chk=document.getElementById('echk-'+id);
-  chk.checked=!chk.checked;
-  lbl.classList.toggle('checked',chk.checked);
-}
+      function eTogglePlayer(id) {
+        const lbl = document.getElementById("epc-" + id);
+        const chk = document.getElementById("echk-" + id);
+        chk.checked = !chk.checked;
+        lbl.classList.toggle("checked", chk.checked);
+      }
 
-function saveEdit(gameId){
-  const idx=games.findIndex(x=>x.id===gameId);
-  if(idx===-1)return;
-  const date=document.getElementById('ef-date').value;
-  const season=parseInt(document.getElementById('ef-season').value)||CURRENT_SEASON;
-  const winner=document.getElementById('ef-winner').value;
-  const pos=document.getElementById('ef-pos').value;
-  const la=document.getElementById('ef-la').value||null;
-  const lr=document.getElementById('ef-lr').value||null;
-  const host=document.getElementById('ef-host').value||null;
-  const notes=document.getElementById('ef-notes').value.trim();
-  const players=P.filter(p=>document.getElementById('echk-'+p.id)?.checked).map(p=>p.id);
-  if(!date||!winner){showToast('⚠ Date and winner are required!');return;}
-  const sp={};if(winner&&pos)sp[winner]=parseInt(pos);
-  games[idx]={...games[idx],date,season,players,winner,la,lr,startPositions:sp,host,notes,incomplete:false};
-  save();
-  closeEdit();
-  showToast('✓ Game updated!');
-  render();
-}
+      function saveEdit(gameId) {
+        const idx = games.findIndex((x) => x.id === gameId);
+        if (idx === -1) return;
+        const date = document.getElementById("ef-date").value;
+        const season =
+          parseInt(document.getElementById("ef-season").value) ||
+          CURRENT_SEASON;
+        const winner = document.getElementById("ef-winner").value;
+        const pos = document.getElementById("ef-pos").value;
+        const la = document.getElementById("ef-la").value || null;
+        const lr = document.getElementById("ef-lr").value || null;
+        const host = document.getElementById("ef-host").value || null;
+        const notes = document.getElementById("ef-notes").value.trim();
+        const players = P.filter(
+          (p) => document.getElementById("echk-" + p.id)?.checked,
+        ).map((p) => p.id);
+        if (!date || !winner) {
+          showToast("⚠ Date and winner are required!");
+          return;
+        }
+        const sp = {};
+        if (winner && pos) sp[winner] = parseInt(pos);
+        games[idx] = {
+          ...games[idx],
+          date,
+          season,
+          players,
+          winner,
+          la,
+          lr,
+          startPositions: sp,
+          host,
+          notes,
+          incomplete: false,
+        };
+        save();
+        closeEdit();
+        showToast("✓ Game updated!");
+        render();
+      }
 
-function deleteGame(gameId){
-  if(!confirm('Delete this game? This cannot be undone.'))return;
-  games=games.filter(x=>x.id!==gameId);
-  save();
-  closeEdit();
-  showToast('🗑 Game deleted.');
-  render();
-}
+      function deleteGame(gameId) {
+        if (!confirm("Delete this game? This cannot be undone.")) return;
+        games = games.filter((x) => x.id !== gameId);
+        save();
+        closeEdit();
+        showToast("🗑 Game deleted.");
+        render();
+      }
 
-/* ─── TABS ─── */
-function activateTab(tab){
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
-  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('active',p.id==='tab-'+tab));
-  render();
-}
-document.getElementById('nav').addEventListener('click',e=>{
-  const btn=e.target.closest('.tab-btn');
-  if(btn)activateTab(btn.dataset.tab);
-});
+      /* ─── TABS ─── */
+      function activateTab(tab) {
+        document
+          .querySelectorAll(".tab-btn")
+          .forEach((b) => b.classList.toggle("active", b.dataset.tab === tab));
+        document
+          .querySelectorAll(".pane")
+          .forEach((p) => p.classList.toggle("active", p.id === "tab-" + tab));
+        render();
+      }
+      document.getElementById("nav").addEventListener("click", (e) => {
+        const btn = e.target.closest(".tab-btn");
+        if (btn) activateTab(btn.dataset.tab);
+      });
 
-/* ─── TOAST ─── */
-function showToast(msg){
-  const t=document.getElementById('toast');
-  t.textContent=msg;
-  t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),3000);
-}
+      /* ─── TOAST ─── */
+      function showToast(msg) {
+        const t = document.getElementById("toast");
+        t.textContent = msg;
+        t.classList.add("show");
+        setTimeout(() => t.classList.remove("show"), 3000);
+      }
 
-/* ─── STORAGE ─── */
-function save(){try{localStorage.setItem('catan-v4',JSON.stringify(games));}catch(e){}}
-function load(){try{const r=localStorage.getItem('catan-v4');if(r)games=JSON.parse(r);}catch(e){}}
+      /* ─── STORAGE ─── */
+      function save() {
+        try {
+          localStorage.setItem("catan-v4", JSON.stringify(games));
+        } catch (e) {}
+      }
+      function load() {
+        try {
+          const r = localStorage.getItem("catan-v4");
+          if (r) games = JSON.parse(r);
+        } catch (e) {}
+      }
 
-/* ─── RENDER ─── */
-function render(){
-  const active=document.querySelector('.pane.active')?.id?.replace('tab-','');
-  if(active==='overview')renderOverview();
-  else if(active==='s6')renderS6();
-  else if(active==='champions')renderChampions();
-  else if(active==='history')renderHistory();
-  else if(active==='log')renderLog();
-}
+      /* ─── RENDER ─── */
+      function render() {
+        const active = document
+          .querySelector(".pane.active")
+          ?.id?.replace("tab-", "");
+        if (active === "overview") renderOverview();
+        else if (active === "s6") renderS6();
+        else if (active === "champions") renderChampions();
+        else if (active === "history") renderHistory();
+        else if (active === "log") renderLog();
+      }
 
-load();
-render();
-</script>
-</body>
+      load();
+      render();
+    </script>
+  </body>
 </html>
