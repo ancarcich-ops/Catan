@@ -2025,15 +2025,16 @@
       }
       // Last-win dates inferred from iMessage chat history (through 2026-04-16).
       // Used as fallback for drought calc so players with no logged games still show accurate droughts.
+      // Fallback last-win dates inferred from iMessage chat history.
+      // Removed entries for players whose logged games now provide accurate dates:
+      //   corbin (May 21 logged), nicko (May 13 logged), andrew/lance/krupka (Apr/Mar/Feb logged).
+      // Only keep entries for players with NO logged games — these are best-effort estimates
+      // from when their score last incremented in the chat title.
+      // Once a player logs any game, remove their entry here so the logged date takes over.
       const LAST_WIN_DATES = {
-        corbin: "2024-01-10",
         luke: "2024-10-23",
         tk: "2025-07-23",
         parker: "2025-10-02",
-        nicko: "2025-11-11",
-        lance: "2026-04-16",
-        andrew: "2026-04-16",
-        krupka: "2026-04-16",
       };
       function getDrought() {
         const today = td();
