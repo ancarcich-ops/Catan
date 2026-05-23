@@ -2238,7 +2238,7 @@
       </div>
       <div class="pcard-stat" style="margin-top:4px"><span class="pcard-stat-label">Win Rate</span><span class="pcard-stat-val" style="${s.wins > 0 ? `color:${p.hex}` : ""}"> ${s.games > 0 ? s.wr.toFixed(0) + "%" : "—"}</span></div>
       <div class="pcard-stat"><span class="pcard-stat-label">Games</span><span class="pcard-stat-val">${s.games}</span></div>
-      <div class="drought-badge ${drCls}">${drStr}</div>
+      ${drBadgeHTML}
     </div>`;
         }
 
