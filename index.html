@@ -1215,6 +1215,481 @@
       .btn-del-sm:hover {
         background: rgba(196, 74, 42, 0.25);
       }
+
+      /* ═══════════════════════════════════════════
+         ENHANCED ANIMATIONS & EFFECTS
+         ═══════════════════════════════════════════ */
+
+      /* Staggered player card entrance */
+      @keyframes pcardIn {
+        from {
+          opacity: 0;
+          transform: translateY(24px) scale(0.94);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+      .pcard {
+        animation: pcardIn 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+        transition:
+          transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+          box-shadow 0.35s ease,
+          border-color 0.35s ease;
+      }
+      .pcard:nth-child(1) {
+        animation-delay: 0s;
+      }
+      .pcard:nth-child(2) {
+        animation-delay: 0.07s;
+      }
+      .pcard:nth-child(3) {
+        animation-delay: 0.14s;
+      }
+      .pcard:nth-child(4) {
+        animation-delay: 0.21s;
+      }
+      .pcard:nth-child(5) {
+        animation-delay: 0.28s;
+      }
+      .pcard:nth-child(6) {
+        animation-delay: 0.35s;
+      }
+      .pcard:nth-child(7) {
+        animation-delay: 0.42s;
+      }
+      .pcard:nth-child(8) {
+        animation-delay: 0.49s;
+      }
+      .pcard:hover {
+        transform: translateY(-5px) scale(1.02);
+        box-shadow:
+          0 14px 30px rgba(0, 0, 0, 0.55),
+          0 0 25px var(--pc-glow, rgba(201, 146, 42, 0.45));
+        border-color: var(--pc-color, var(--gold2));
+      }
+
+      /* Hero stat — subtle golden breath */
+      @keyframes heroBreath {
+        0%,
+        100% {
+          text-shadow: 0 0 6px rgba(201, 146, 42, 0.25);
+        }
+        50% {
+          text-shadow: 0 0 16px rgba(245, 216, 122, 0.6);
+        }
+      }
+      .pcard-stat-val {
+        animation: heroBreath 3.5s ease-in-out infinite;
+      }
+
+      /* Win Race bars grow from the left */
+      @keyframes barGrow {
+        from {
+          transform: scaleX(0);
+        }
+        to {
+          transform: scaleX(1);
+        }
+      }
+      .bar-fill {
+        transform-origin: left center;
+        animation: barGrow 1.1s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      .bar-row {
+        transition: transform 0.25s ease;
+      }
+      .bar-row:hover {
+        transform: translateX(4px);
+      }
+      @keyframes barNumPop {
+        0% {
+          opacity: 0;
+          transform: scale(0.5);
+        }
+        60% {
+          opacity: 1;
+          transform: scale(1.15);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+      .bar-num {
+        animation: barNumPop 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+        animation-delay: 0.6s;
+        display: inline-block;
+      }
+
+      /* Drought-HOT badge pulse */
+      @keyframes droughtPulse {
+        0%,
+        100% {
+          box-shadow: 0 0 0 0 rgba(229, 57, 53, 0.55);
+          transform: scale(1);
+        }
+        50% {
+          box-shadow: 0 0 14px 4px rgba(229, 57, 53, 0.35);
+          transform: scale(1.04);
+        }
+      }
+      .drought-hot {
+        animation: droughtPulse 2.4s ease-in-out infinite;
+      }
+
+      /* Button press + hover feedback */
+      .rtbtn,
+      .filter-btn {
+        transition:
+          transform 0.15s cubic-bezier(0.16, 1, 0.3, 1),
+          box-shadow 0.2s ease,
+          background 0.2s ease,
+          color 0.2s ease;
+      }
+      .rtbtn:hover,
+      .filter-btn:hover {
+        transform: translateY(-2px);
+      }
+      .rtbtn:active,
+      .filter-btn:active {
+        transform: translateY(1px);
+      }
+      .rtbtn.active {
+        box-shadow:
+          0 0 0 1px var(--gold),
+          0 0 18px rgba(245, 216, 122, 0.55);
+      }
+
+      /* Game card polish */
+      .game-card {
+        transition:
+          transform 0.3s ease,
+          box-shadow 0.3s ease,
+          border-color 0.3s ease;
+      }
+      .game-card:hover {
+        transform: translateX(6px) translateY(-2px);
+        border-color: var(--gold2);
+        box-shadow: 0 8px 22px rgba(0, 0, 0, 0.4);
+      }
+
+      /* Tab content fade-in on switch */
+      @keyframes tabIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      #main > div,
+      [id^="tab-"] {
+        animation: tabIn 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      /* Toast slide-in (already exists, just polish) */
+      @keyframes toastIn {
+        from {
+          opacity: 0;
+          transform: translateY(24px) scale(0.9);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+      .toast,
+      [class*="toast"] {
+        animation: toastIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+
+      /* Player avatar glow pulse on hover */
+      .pcard img,
+      .pcard [class*="avatar"] {
+        transition:
+          transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+          box-shadow 0.4s ease;
+      }
+      .pcard:hover img,
+      .pcard:hover [class*="avatar"] {
+        transform: scale(1.08) rotate(-2deg);
+      }
+
+      /* Respect users who prefer reduced motion */
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+
+      /* ═══════════════════════════════════════════
+         CONFETTI (fires on new game log)
+         ═══════════════════════════════════════════ */
+      .confetti-piece {
+        position: fixed;
+        width: 10px;
+        height: 14px;
+        pointer-events: none;
+        z-index: 99999;
+        animation-name: confettiBurst;
+        animation-timing-function: cubic-bezier(0.15, 0.65, 0.35, 1);
+        animation-fill-mode: forwards;
+        will-change: transform, opacity;
+      }
+      .confetti-square {
+        border-radius: 2px;
+      }
+      .confetti-circle {
+        border-radius: 50%;
+        width: 10px;
+        height: 10px;
+      }
+      .confetti-strip {
+        width: 6px;
+        height: 18px;
+        border-radius: 1px;
+      }
+      @keyframes confettiBurst {
+        0% {
+          transform: translate(0, 0) rotate(0);
+          opacity: 1;
+        }
+        60% {
+          opacity: 1;
+        }
+        100% {
+          transform: translate(var(--tx, 0), calc(var(--ty, 0) + 500px))
+            rotate(var(--r, 720deg));
+          opacity: 0;
+        }
+      }
+
+      /* ═══════════════════════════════════════════
+         REIGNING CHAMPION CARD — sparkles + gold aura
+         (namespace: .pcard-reign — avoids collision with Champions tab's .champion-card)
+         ═══════════════════════════════════════════ */
+      .pcard-reign {
+        position: relative;
+        overflow: visible !important;
+        animation:
+          pcardIn 0.55s cubic-bezier(0.16, 1, 0.3, 1) both,
+          championAura 3.2s ease-in-out infinite 0.6s;
+      }
+      @keyframes championAura {
+        0%,
+        100% {
+          box-shadow:
+            0 0 22px rgba(245, 216, 122, 0.45),
+            0 0 0 1px var(--gold2);
+        }
+        50% {
+          box-shadow:
+            0 0 45px rgba(245, 216, 122, 0.8),
+            0 0 70px rgba(232, 184, 75, 0.35),
+            0 0 0 2px var(--gold3);
+        }
+      }
+      /* Floating crown badge on champion card */
+      .champ-crown {
+        position: absolute;
+        top: -18px;
+        right: -8px;
+        font-size: 1.8rem;
+        pointer-events: none;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+        animation: crownFloat 3s ease-in-out infinite;
+        z-index: 5;
+      }
+      @keyframes crownFloat {
+        0%,
+        100% {
+          transform: translateY(0) rotate(-6deg);
+        }
+        50% {
+          transform: translateY(-5px) rotate(6deg);
+        }
+      }
+      /* 4 corner sparkles that twinkle in sequence */
+      .champ-sparkles {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        overflow: visible;
+        z-index: 4;
+      }
+      .champ-sparkles span {
+        position: absolute;
+        font-size: 1rem;
+        opacity: 0;
+        animation: sparkleTwinkle 2.4s ease-in-out infinite;
+        filter: drop-shadow(0 0 6px var(--gold3));
+      }
+      .champ-sparkles span:nth-child(1) {
+        top: 8%;
+        right: 10%;
+        animation-delay: 0s;
+      }
+      .champ-sparkles span:nth-child(2) {
+        top: 45%;
+        left: -8px;
+        font-size: 0.8rem;
+        animation-delay: 0.6s;
+      }
+      .champ-sparkles span:nth-child(3) {
+        bottom: 20%;
+        right: -4px;
+        font-size: 0.9rem;
+        animation-delay: 1.2s;
+      }
+      .champ-sparkles span:nth-child(4) {
+        bottom: 8%;
+        left: 12%;
+        font-size: 0.75rem;
+        animation-delay: 1.8s;
+      }
+      @keyframes sparkleTwinkle {
+        0%,
+        100% {
+          opacity: 0;
+          transform: scale(0.4) rotate(0);
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1.3) rotate(180deg);
+        }
+      }
+
+      /* Drought "HOT" badges get a little extra flame effect text-wise */
+      .drought-hot::before {
+        content: "🔥 ";
+      }
+
+      /* Page load background aura — subtle gold radial pulse in the corner */
+      body::before {
+        content: "";
+        position: fixed;
+        top: -100px;
+        right: -100px;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(
+          circle,
+          rgba(201, 146, 42, 0.15) 0%,
+          transparent 70%
+        );
+        pointer-events: none;
+        animation: bgPulse 6s ease-in-out infinite;
+        z-index: 0;
+      }
+      @keyframes bgPulse {
+        0%,
+        100% {
+          opacity: 0.6;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1.1);
+        }
+      }
+
+      /* ═══════════════════════════════════════════
+         LOG-A-GAME CTA BUTTON (Overview tab)
+         ═══════════════════════════════════════════ */
+      .log-cta {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 14px;
+        width: 100%;
+        margin: 8px 0 28px;
+        padding: 18px 28px;
+        background: linear-gradient(
+          135deg,
+          var(--gold) 0%,
+          var(--gold2) 35%,
+          var(--gold3) 50%,
+          var(--gold2) 65%,
+          var(--gold) 100%
+        );
+        background-size: 250% 100%;
+        background-position: 0% 50%;
+        border: 1px solid var(--gold3);
+        border-radius: 8px;
+        color: #1a1108;
+        font-family: "Cinzel", serif;
+        font-size: 1.05rem;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        cursor: pointer;
+        box-shadow:
+          0 4px 16px rgba(201, 146, 42, 0.35),
+          inset 0 1px 0 rgba(255, 255, 255, 0.35),
+          inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+        animation: logCtaShimmer 5s ease-in-out infinite;
+        transition:
+          transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+          box-shadow 0.3s ease,
+          background-position 0.3s ease;
+      }
+      @keyframes logCtaShimmer {
+        0%,
+        100% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+      }
+      .log-cta:hover {
+        transform: translateY(-3px) scale(1.01);
+        box-shadow:
+          0 10px 28px rgba(245, 216, 122, 0.55),
+          0 0 32px rgba(232, 184, 75, 0.35),
+          inset 0 1px 0 rgba(255, 255, 255, 0.45),
+          inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+      }
+      .log-cta:active {
+        transform: translateY(0) scale(0.99);
+      }
+      .log-cta-icon {
+        font-size: 1.5rem;
+        filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+      }
+      .log-cta-text {
+        flex: 0 1 auto;
+      }
+      .log-cta-arrow {
+        font-size: 1.3rem;
+        transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        opacity: 0.8;
+      }
+      .log-cta:hover .log-cta-arrow {
+        transform: translateX(6px);
+        opacity: 1;
+      }
+      @media (max-width: 500px) {
+        .log-cta {
+          font-size: 0.85rem;
+          padding: 14px 18px;
+          letter-spacing: 0.08em;
+        }
+        .log-cta-icon {
+          font-size: 1.2rem;
+        }
+        .log-cta-arrow {
+          font-size: 1.1rem;
+        }
+      }
     </style>
   </head>
   <body>
@@ -1272,6 +1747,8 @@
         { num: 1, champion: "parker" },
       ];
       const CURRENT_SEASON = 6;
+      // Reigning champion = winner of most recent completed season (gets sparkles ✨)
+      const REIGNING_CHAMP = SEASON_HISTORY.find((s) => s.champion)?.champion;
 
       const P = [
         {
@@ -1500,6 +1977,18 @@
         });
         return s;
       }
+      // Last-win dates inferred from iMessage chat history (through 2026-04-16).
+      // Used as fallback for drought calc so players with no logged games still show accurate droughts.
+      const LAST_WIN_DATES = {
+        corbin: "2024-01-10",
+        luke: "2024-10-23",
+        tk: "2025-07-23",
+        parker: "2025-10-02",
+        nicko: "2025-11-11",
+        lance: "2026-04-16",
+        andrew: "2026-04-16",
+        krupka: "2026-04-16",
+      };
       function getDrought() {
         const today = td();
         const d = {};
@@ -1509,6 +1998,7 @@
             ...SEASON_HISTORY.filter(
               (s) => s.champion === p.id && s.endDate,
             ).map((s) => ({ date: s.endDate })),
+            ...(LAST_WIN_DATES[p.id] ? [{ date: LAST_WIN_DATES[p.id] }] : []),
           ];
           if (!allWins.length) {
             // count all games they've played
@@ -1636,7 +2126,9 @@
         <div class="drought-badge ${drCls}">${drStr}</div>
       </div>`;
           }
-          return `<div class="pcard" style="--pc-color:${p.hex};--pc-glow:${p.hex}33">
+          const isChamp = p.id === REIGNING_CHAMP;
+          return `<div class="pcard ${isChamp ? "pcard-reign" : ""}" style="--pc-color:${p.hex};--pc-glow:${p.hex}33">
+      ${isChamp ? `<div class="champ-sparkles"><span>✨</span><span>✨</span><span>✨</span><span>✨</span></div><div class="champ-crown">👑</div>` : ""}
       ${
         p.img
           ? `<div class="pcard-avatar" style="background:${p.hex}22;border:2px solid ${p.hex};box-shadow:0 0 16px ${p.hex}44;padding:0;overflow:hidden"><img src="${p.img}" style="width:100%;height:100%;object-fit:cover;object-position:center center;display:block;border-radius:50%"></div>`
@@ -1695,6 +2187,11 @@
         }
 
         el.innerHTML = `
+    <button class="log-cta" onclick="activateTab('log')">
+      <span class="log-cta-icon">⚔️</span>
+      <span class="log-cta-text">Log a New Game</span>
+      <span class="log-cta-arrow">→</span>
+    </button>
     <div class="section-label">The Settlers</div>
     <div class="pgrid">${cardsHTML}</div>
 
@@ -2076,6 +2573,7 @@
           notes,
         });
         save();
+        confetti();
         showToast("👑 " + (gp(winner)?.name || winner) + " has been crowned!");
         render();
         // switch to s6
@@ -2278,6 +2776,67 @@
         t.classList.add("show");
         setTimeout(() => t.classList.remove("show"), 3000);
       }
+
+      /* ─── CONFETTI ─── */
+      function confetti(x, y) {
+        x = x ?? window.innerWidth / 2;
+        y = y ?? window.innerHeight / 3;
+        const colors = [
+          "#c9922a",
+          "#e8b84b",
+          "#f5d87a",
+          "#e53935",
+          "#43a047",
+          "#42a5f5",
+          "#fb8c00",
+          "#a1887f",
+          "#ffffff",
+        ];
+        const shapes = ["square", "circle", "strip"];
+        for (let i = 0; i < 70; i++) {
+          const el = document.createElement("div");
+          el.className = "confetti-piece confetti-" + shapes[i % 3];
+          const tx = (Math.random() - 0.5) * 700;
+          const ty = -Math.random() * 250 - 100;
+          const r = (Math.random() - 0.5) * 1200;
+          const dur = 1.1 + Math.random() * 0.9;
+          el.style.cssText =
+            "left:" +
+            x +
+            "px;top:" +
+            y +
+            "px;" +
+            "background:" +
+            colors[i % colors.length] +
+            ";" +
+            "--tx:" +
+            tx +
+            "px;--ty:" +
+            ty +
+            "px;--r:" +
+            r +
+            "deg;" +
+            "animation-duration:" +
+            dur +
+            "s;" +
+            "animation-delay:" +
+            Math.random() * 0.15 +
+            "s;";
+          document.body.appendChild(el);
+          setTimeout(() => el.remove(), (dur + 0.5) * 1000);
+        }
+      }
+
+      /* ─── LIVE DROUGHT COUNTER (re-renders once per minute so "days since" stays accurate) ─── */
+      setInterval(() => {
+        // Only re-render if Overview tab is visible — avoids interrupting form input
+        const overview = document.getElementById("tab-overview");
+        if (overview && overview.offsetParent !== null) {
+          try {
+            render();
+          } catch (e) {}
+        }
+      }, 60000);
 
       /* ─── STORAGE ─── */
       function save() {
