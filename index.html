@@ -1969,12 +1969,15 @@
       }
       // Historical baseline from iMessage chat (2022-02-10 → 2026-04-16).
       // Includes all Season 6 wins through 2026-04-16. Only log NEW S6 games dated 2026-04-17 or later.
+      // Adjusted to avoid double-counting wins that are now individually logged.
+      // Subtracted: krupka -1 (Feb 20), lance -2 (Apr 2 + Mar 12), andrew -2 (Apr 16 + Jan 25).
+      // May 13 (nicko) and May 21 (corbin) games are post-baseline, so no subtraction needed.
       const HISTORICAL_WINS = {
-        krupka: 32,
+        krupka: 31,
         parker: 31,
         nicko: 25,
-        lance: 25,
-        andrew: 18,
+        lance: 23,
+        andrew: 16,
         corbin: 13,
         tk: 5,
         luke: 1,
