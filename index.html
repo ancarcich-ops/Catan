@@ -3020,14 +3020,19 @@
           )
           .subscribe();
 
+        // SNAPSHOT localStorage BEFORE pulling (pull overwrites localStorage)
+        let localSnapshot = [];
+        try {
+          localSnapshot = JSON.parse(localStorage.getItem("catan-v4") || "[]");
+        } catch (e) {}
+
         // Initial pull
         const ok = await pullFromSupabase();
         if (!ok) return;
 
         // Migration: push any local-only games into Supabase
-        const local = JSON.parse(localStorage.getItem("catan-v4") || "[]");
         const remoteIds = new Set(games.map((g) => g.id));
-        const localOnly = local.filter((g) => !remoteIds.has(g.id));
+        const localOnly = localSnapshot.filter((g) => !remoteIds.has(g.id));
         if (localOnly.length > 0) {
           showToast(`☁ Syncing ${localOnly.length} local games to cloud...`);
           for (const g of localOnly) {
