@@ -2126,6 +2126,12 @@
         for (let i = 1; i <= 6; i++) exp[i] = { wins: 0, games: 0 };
         const visIds = new Set(vP().map((p) => p.id));
         games.forEach((g) => {
+          // Skip incomplete entries and games without recorded winner position —
+          // they don't have meaningful position data to count.
+          if (g.incomplete) return;
+          if (!g.winner || !g.startPositions || !g.startPositions[g.winner])
+            return;
+
           const activePlayers = g.players.filter((id) => visIds.has(id));
           const n = activePlayers.length;
           const bucket = n >= 5 ? exp : std;
@@ -2133,12 +2139,7 @@
           for (let i = 1; i <= Math.min(n, maxPos); i++) {
             if (bucket[i]) bucket[i].games++;
           }
-          if (
-            g.winner &&
-            visIds.has(g.winner) &&
-            g.startPositions &&
-            g.startPositions[g.winner]
-          ) {
+          if (visIds.has(g.winner)) {
             const sp = g.startPositions[g.winner];
             if (bucket[sp] !== undefined) bucket[sp].wins++;
           }
