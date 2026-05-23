@@ -897,13 +897,41 @@
         border-radius: 4px;
         padding: 10px 8px;
         text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+      }
+      .pos-label {
+        font-family: "Cinzel", serif;
+        font-size: 0.5rem;
+        letter-spacing: 0.18em;
+        color: var(--text3);
+        text-transform: uppercase;
+        opacity: 0.75;
       }
       .pos-num {
         font-family: "Cinzel Decorative", serif;
-        font-size: 1.2rem;
+        font-size: 1.4rem;
         color: var(--gold);
-        margin-bottom: 4px;
+        line-height: 1;
+        margin-bottom: 6px;
       }
+      .pos-rate {
+        font-family: "Cinzel", serif;
+        font-size: 0.95rem;
+        font-weight: 700;
+        line-height: 1;
+        letter-spacing: 0.05em;
+      }
+      .pos-detail {
+        font-family: "Cinzel", serif;
+        font-size: 0.55rem;
+        color: var(--text3);
+        letter-spacing: 0.08em;
+        margin-top: 2px;
+      }
+      /* Legacy class kept for any other references */
       .pos-wins {
         font-family: "Cinzel", serif;
         font-size: 0.68rem;
@@ -2247,9 +2275,13 @@
               const wr =
                 d.games > 0 ? ((d.wins / d.games) * 100).toFixed(0) + "%" : "—";
               const hot = d.games > 0 && d.wins / d.games >= 0.3;
+              const detailColor = d.games > 0 ? "var(--gold2)" : "var(--text3)";
               return `<div class="pos-card" style="${hot ? "border-color:rgba(201,146,42,0.4)" : ""}">
+        <div class="pos-label">Pick</div>
         <div class="pos-num" style="${hot ? "color:var(--gold3)" : ""}">${i}</div>
-        <div class="pos-wins">${d.wins}W / ${d.games}G<br><span style="color:${d.games > 0 ? "var(--gold2)" : "var(--text3)"}">${wr}</span></div>
+        <div class="pos-label">Win Rate</div>
+        <div class="pos-rate" style="color:${detailColor}">${wr}</div>
+        <div class="pos-detail">${d.wins} of ${d.games}</div>
       </div>`;
             })
             .join("");
