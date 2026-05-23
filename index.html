@@ -342,12 +342,29 @@
       }
       .drought-badge {
         margin-top: 8px;
-        padding: 3px 7px;
+        padding: 5px 7px;
         border-radius: 3px;
         font-family: "Cinzel", serif;
         font-size: 0.6rem;
         letter-spacing: 0.08em;
         text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1px;
+        line-height: 1.1;
+      }
+      .drought-label {
+        font-size: 0.5rem;
+        letter-spacing: 0.16em;
+        opacity: 0.65;
+        text-transform: uppercase;
+        font-weight: 500;
+      }
+      .drought-value {
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
       }
       .drought-ok {
         background: rgba(74, 138, 58, 0.2);
@@ -2148,8 +2165,10 @@
           const d = drought[p.id];
           const titles = champ[p.id];
           let drStr = "No wins yet",
-            drCls = "drought-hot";
+            drCls = "drought-hot",
+            drLabel = "";
           if (d.status === "ok") {
+            drLabel = "Last Win";
             if (d.days === 0) {
               drStr = "Today!";
               drCls = "drought-ok";
@@ -2164,13 +2183,16 @@
               drCls = "drought-hot";
             }
           }
+          const drBadgeHTML = drLabel
+            ? `<div class="drought-badge ${drCls}"><span class="drought-label">${drLabel}</span><span class="drought-value">${drStr}</span></div>`
+            : `<div class="drought-badge ${drCls}">${drStr}</div>`;
           if (p.fillIn) {
             return `<div class="pcard" style="--pc-color:#555;--pc-glow:rgba(255,255,255,0.08)">
         <div class="pcard-fi-bar"></div>
         <div class="pcard-avatar avatar-fi" style="color:#fff;font-size:.7rem">${p.initial}</div>        <div class="pcard-name">${p.name} <span class="fillin-badge">Fill-in</span></div>
         <div class="pcard-stat"><span class="pcard-stat-label">Win Rate</span><span class="pcard-stat-val">${s.games > 0 ? s.wr.toFixed(0) + "%" : "—"}</span></div>
         <div class="pcard-stat"><span class="pcard-stat-label">Wins / Games</span><span class="pcard-stat-val">${s.wins} / ${s.games}</span></div>
-        <div class="drought-badge ${drCls}">${drStr}</div>
+        ${drBadgeHTML}
       </div>`;
           }
           const isChamp = p.id === REIGNING_CHAMP;
