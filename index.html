@@ -1690,7 +1690,47 @@
           font-size: 1.1rem;
         }
       }
+
+      /* ═══════════════════════════════════════════
+         CLOUD SYNC STATUS PILL
+         ═══════════════════════════════════════════ */
+      .sync-status {
+        position: fixed;
+        bottom: 12px;
+        left: 12px;
+        z-index: 9998;
+        padding: 6px 12px;
+        background: rgba(0, 0, 0, 0.75);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        font-family: "Cinzel", serif;
+        font-size: 0.7rem;
+        letter-spacing: 0.06em;
+        color: var(--text3);
+        pointer-events: none;
+        user-select: none;
+        transition:
+          color 0.3s ease,
+          border-color 0.3s ease,
+          opacity 0.3s ease;
+        opacity: 0.85;
+      }
+      .sync-status:hover {
+        opacity: 1;
+      }
+      @media (max-width: 500px) {
+        .sync-status {
+          bottom: 8px;
+          left: 8px;
+          font-size: 0.6rem;
+          padding: 4px 10px;
+        }
+      }
     </style>
+    <!-- Supabase SDK for shared real-time game state -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   </head>
   <body>
     <div class="wrap">
@@ -1732,6 +1772,9 @@
       <div id="tab-log" class="pane"></div>
     </div>
     <div class="toast" id="toast">✓ Game logged to the chronicle!</div>
+    <div id="sync-status" class="sync-status" title="Cloud sync status">
+      ○ Connecting
+    </div>
 
     <script>
       const SEASON_HISTORY = [
@@ -2573,6 +2616,7 @@
           notes,
         });
         save();
+        pushGame(games[games.length - 1]);
         confetti();
         showToast("👑 " + (gp(winner)?.name || winner) + " has been crowned!");
         render();
@@ -2740,6 +2784,7 @@
           incomplete: false,
         };
         save();
+        pushGame(games[idx]);
         closeEdit();
         showToast("✓ Game updated!");
         render();
@@ -2749,6 +2794,7 @@
         if (!confirm("Delete this game? This cannot be undone.")) return;
         games = games.filter((x) => x.id !== gameId);
         save();
+        deleteGameRemote(gameId);
         closeEdit();
         showToast("🗑 Game deleted.");
         render();
@@ -2851,6 +2897,147 @@
         } catch (e) {}
       }
 
+      /* ═══════════════════════════════════════════
+         SUPABASE — shared real-time game state
+         ═══════════════════════════════════════════ */
+      const SUPABASE_URL = "https://tqpbpqwrecsbrhnzjsbe.supabase.co";
+      const SUPABASE_ANON =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRxcGJwcXdyZWNzYnJobnpqc2JlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0OTY4ODIsImV4cCI6MjA5NTA3Mjg4Mn0.eqjW4CeueSyoDg6BKPAcAQ5C3Ye6uY5rngpbkA6ABII";
+      let sb = null;
+      let _suppressNextRealtime = false;
+
+      function setSyncStatus(s) {
+        const el = document.getElementById("sync-status");
+        if (!el) return;
+        const cfg = {
+          connecting: { text: "○ Connecting", color: "var(--text3)" },
+          syncing: { text: "◐ Syncing", color: "var(--gold2)" },
+          synced: { text: "● Live", color: "#43a047" },
+          offline: { text: "● Offline", color: "#e53935" },
+        }[s] || { text: s, color: "var(--text2)" };
+        el.textContent = cfg.text;
+        el.style.color = cfg.color;
+      }
+
+      function gameToRow(g) {
+        return {
+          id: g.id,
+          date: g.date,
+          season: g.season,
+          incomplete: !!g.incomplete,
+          players: g.players || [],
+          winner: g.winner || null,
+          vp: g.vp || {},
+          lr: g.lr || null,
+          la: g.la || null,
+          start_positions: g.startPositions || {},
+          host: g.host || null,
+          notes: g.notes || null,
+          updated_at: new Date().toISOString(),
+        };
+      }
+      function rowToGame(r) {
+        return {
+          id: r.id,
+          date: r.date,
+          season: r.season,
+          incomplete: r.incomplete,
+          players: r.players || [],
+          winner: r.winner,
+          vp: r.vp || {},
+          lr: r.lr,
+          la: r.la,
+          startPositions: r.start_positions || {},
+          host: r.host,
+          notes: r.notes,
+        };
+      }
+
+      async function pullFromSupabase() {
+        if (!sb) return false;
+        setSyncStatus("syncing");
+        const { data, error } = await sb
+          .from("games")
+          .select("*")
+          .order("date", { ascending: true });
+        if (error) {
+          console.warn("Supabase pull failed:", error);
+          setSyncStatus("offline");
+          return false;
+        }
+        games = (data || []).map(rowToGame);
+        save();
+        setSyncStatus("synced");
+        return true;
+      }
+
+      async function pushGame(g) {
+        if (!sb) return;
+        setSyncStatus("syncing");
+        _suppressNextRealtime = true;
+        const { error } = await sb.from("games").upsert(gameToRow(g));
+        if (error) {
+          console.warn("Supabase push failed:", error);
+          setSyncStatus("offline");
+        } else {
+          setSyncStatus("synced");
+        }
+      }
+
+      async function deleteGameRemote(id) {
+        if (!sb) return;
+        setSyncStatus("syncing");
+        _suppressNextRealtime = true;
+        const { error } = await sb.from("games").delete().eq("id", id);
+        if (error) {
+          console.warn("Supabase delete failed:", error);
+          setSyncStatus("offline");
+        } else {
+          setSyncStatus("synced");
+        }
+      }
+
+      async function initSupabase() {
+        if (typeof supabase === "undefined") {
+          setSyncStatus("offline");
+          return;
+        }
+        sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+        // Real-time: re-pull on any change broadcast from other clients
+        sb.channel("games-channel")
+          .on(
+            "postgres_changes",
+            { event: "*", schema: "public", table: "games" },
+            async () => {
+              if (_suppressNextRealtime) {
+                _suppressNextRealtime = false;
+                return;
+              }
+              await pullFromSupabase();
+              render();
+            },
+          )
+          .subscribe();
+
+        // Initial pull
+        const ok = await pullFromSupabase();
+        if (!ok) return;
+
+        // Migration: push any local-only games into Supabase
+        const local = JSON.parse(localStorage.getItem("catan-v4") || "[]");
+        const remoteIds = new Set(games.map((g) => g.id));
+        const localOnly = local.filter((g) => !remoteIds.has(g.id));
+        if (localOnly.length > 0) {
+          showToast(`☁ Syncing ${localOnly.length} local games to cloud...`);
+          for (const g of localOnly) {
+            await pushGame(g);
+          }
+          await pullFromSupabase();
+        }
+        render();
+      }
+
       /* ─── RENDER ─── */
       function render() {
         const active = document
@@ -2865,6 +3052,7 @@
 
       load();
       render();
+      initSupabase();
     </script>
   </body>
 </html>
