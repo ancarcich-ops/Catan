@@ -1737,6 +1737,177 @@
       }
 
       /* ═══════════════════════════════════════════
+         HOSTS TAB — Up Next / Just Hosted / Rotation
+         ═══════════════════════════════════════════ */
+      .host-feature-row {
+        display: grid;
+        grid-template-columns: 1.3fr 1fr;
+        gap: 20px;
+        margin-top: 8px;
+      }
+      .host-card {
+        background: rgba(0, 0, 0, 0.32);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 24px 18px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        text-align: center;
+        position: relative;
+      }
+      .host-next-card {
+        border: 2px solid var(--pc-color, var(--gold));
+        background: linear-gradient(
+          180deg,
+          rgba(201, 146, 42, 0.08),
+          rgba(0, 0, 0, 0.4)
+        );
+        animation: hostNextPulse 3.2s ease-in-out infinite;
+      }
+      @keyframes hostNextPulse {
+        0%,
+        100% {
+          box-shadow:
+            0 0 25px rgba(245, 216, 122, 0.25),
+            0 0 0 1px var(--pc-color, var(--gold));
+        }
+        50% {
+          box-shadow:
+            0 0 50px rgba(245, 216, 122, 0.5),
+            0 0 0 2px var(--pc-color, var(--gold));
+        }
+      }
+      .host-card-label {
+        font-family: "Cinzel", serif;
+        font-size: 0.7rem;
+        letter-spacing: 0.2em;
+        color: var(--text3);
+        text-transform: uppercase;
+      }
+      .host-next-card .host-card-label {
+        color: var(--gold2);
+      }
+      .host-avatar {
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+      .host-avatar-empty {
+        background: rgba(255, 255, 255, 0.04);
+        border: 2px dashed var(--text3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text3);
+        border-radius: 50%;
+      }
+      .host-card-name {
+        font-family: "Cinzel Decorative", serif;
+        font-size: 1.6rem;
+        font-weight: 700;
+        line-height: 1;
+        margin-top: 4px;
+      }
+      .host-card-sub {
+        font-family: "Cinzel", serif;
+        font-size: 0.7rem;
+        color: var(--text3);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+      .host-mark-btn {
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .rotation-row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        flex-wrap: wrap;
+        padding: 8px 0;
+      }
+      .rotation-slot {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        padding: 12px 10px;
+        border-radius: 8px;
+        min-width: 92px;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        position: relative;
+      }
+      .rotation-last {
+        background: rgba(255, 255, 255, 0.03);
+        opacity: 0.65;
+      }
+      .rotation-next {
+        background: rgba(201, 146, 42, 0.1);
+        animation: rotationNextPulse 2.6s ease-in-out infinite;
+      }
+      @keyframes rotationNextPulse {
+        0%,
+        100% {
+          box-shadow: 0 0 18px rgba(245, 216, 122, 0.2);
+        }
+        50% {
+          box-shadow: 0 0 32px rgba(245, 216, 122, 0.45);
+        }
+      }
+      .rotation-pos {
+        font-family: "Cinzel Decorative", serif;
+        font-size: 0.85rem;
+        color: var(--text3);
+        line-height: 1;
+      }
+      .rotation-next .rotation-pos {
+        color: var(--gold2);
+      }
+      .rotation-name {
+        font-family: "Cinzel", serif;
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-align: center;
+      }
+      .rotation-badge {
+        font-family: "Cinzel", serif;
+        font-size: 0.5rem;
+        letter-spacing: 0.16em;
+        color: var(--text3);
+        text-transform: uppercase;
+      }
+      .rotation-next-badge {
+        color: var(--gold2);
+      }
+      .rotation-arrow {
+        color: var(--text3);
+        font-size: 1.1rem;
+        opacity: 0.5;
+        user-select: none;
+      }
+      @media (max-width: 700px) {
+        .host-feature-row {
+          grid-template-columns: 1fr;
+        }
+        .rotation-row {
+          gap: 2px;
+        }
+        .rotation-slot {
+          min-width: 72px;
+          padding: 8px 4px;
+        }
+        .rotation-arrow {
+          display: none;
+        }
+        .host-card-name {
+          font-size: 1.3rem;
+        }
+      }
+
+      /* ═══════════════════════════════════════════
          CLOUD SYNC STATUS PILL
          ═══════════════════════════════════════════ */
       .sync-status {
@@ -1793,6 +1964,7 @@
         <button class="tab-btn" data-tab="s6">🗺 Season VI</button>
         <button class="tab-btn" data-tab="champions">🏆 Champions</button>
         <button class="tab-btn" data-tab="history">📜 History</button>
+        <button class="tab-btn" data-tab="hosts">🏠 Hosts</button>
         <button class="tab-btn" data-tab="log">✍️ Log Game</button>
       </nav>
 
@@ -1814,6 +1986,7 @@
       <div id="tab-s6" class="pane"></div>
       <div id="tab-champions" class="pane"></div>
       <div id="tab-history" class="pane"></div>
+      <div id="tab-hosts" class="pane"></div>
       <div id="tab-log" class="pane"></div>
     </div>
     <div class="toast" id="toast">✓ Game logged to the chronicle!</div>
@@ -2556,6 +2729,189 @@
     </div>`;
       }
 
+      /* ─── HOST ROTATION ─── */
+      const HOST_ROTATION = [
+        "lance",
+        "corbin",
+        "krupka",
+        "andrew",
+        "nicko",
+        "parker",
+      ];
+      let hostState = { lastHost: null, lastHostDate: null };
+
+      function saveHost() {
+        try {
+          localStorage.setItem("catan-host", JSON.stringify(hostState));
+        } catch (e) {}
+        pushHostState();
+      }
+
+      function loadHost() {
+        try {
+          const r = localStorage.getItem("catan-host");
+          if (r) hostState = JSON.parse(r);
+        } catch (e) {}
+      }
+
+      async function pushHostState() {
+        if (!sb) return;
+        setSyncStatus("syncing");
+        _suppressNextRealtime = true;
+        const { error } = await sb.from("host_rotation").upsert({
+          id: "current",
+          last_host: hostState.lastHost,
+          last_host_date: hostState.lastHostDate,
+          updated_at: new Date().toISOString(),
+        });
+        if (error) {
+          console.warn(
+            "Host push failed (table may not exist yet):",
+            error.message,
+          );
+          setSyncStatus("offline");
+        } else {
+          setSyncStatus("synced");
+        }
+      }
+
+      async function pullHostState() {
+        if (!sb) return false;
+        const { data, error } = await sb
+          .from("host_rotation")
+          .select("*")
+          .eq("id", "current")
+          .maybeSingle();
+        if (error) {
+          console.warn(
+            "Host pull failed (table may not exist yet):",
+            error.message,
+          );
+          return false;
+        }
+        if (data) {
+          hostState.lastHost = data.last_host;
+          hostState.lastHostDate = data.last_host_date;
+          try {
+            localStorage.setItem("catan-host", JSON.stringify(hostState));
+          } catch (e) {}
+        }
+        return true;
+      }
+
+      function getNextHostId() {
+        if (!hostState.lastHost) return HOST_ROTATION[0];
+        const idx = HOST_ROTATION.indexOf(hostState.lastHost);
+        if (idx === -1) return HOST_ROTATION[0];
+        return HOST_ROTATION[(idx + 1) % HOST_ROTATION.length];
+      }
+
+      function markHosted() {
+        const nextId = getNextHostId();
+        hostState.lastHost = nextId;
+        hostState.lastHostDate = new Date().toISOString().slice(0, 10);
+        saveHost();
+        const name = gp(nextId)?.name || nextId;
+        showToast("🏠 " + name + " is now the last host!");
+        render();
+      }
+
+      function setLastHostManual() {
+        const sel = document.getElementById("last-host-select");
+        if (!sel || !sel.value) {
+          showToast("⚠ Pick a player first.");
+          return;
+        }
+        hostState.lastHost = sel.value;
+        hostState.lastHostDate = new Date().toISOString().slice(0, 10);
+        saveHost();
+        const name = gp(sel.value)?.name || sel.value;
+        showToast("✓ Last host set to " + name);
+        render();
+      }
+
+      function renderHosts() {
+        const el = document.getElementById("tab-hosts");
+        const lastHost = hostState.lastHost;
+        const lastHostDate = hostState.lastHostDate;
+        const nextId = getNextHostId();
+        const lastHostPlayer = lastHost ? gp(lastHost) : null;
+        const nextHostPlayer = gp(nextId);
+
+        function hostAvatarHTML(p, size) {
+          if (!p)
+            return `<div class="host-avatar host-avatar-empty" style="width:${size}px;height:${size}px;font-size:${size / 2.5}px">?</div>`;
+          if (p.img) {
+            return `<div class="host-avatar" style="background:${p.hex}22;border:3px solid ${p.hex};box-shadow:0 0 30px ${p.hex}66;width:${size}px;height:${size}px;overflow:hidden"><img src="${p.img}" style="width:100%;height:100%;object-fit:cover;border-radius:50%"></div>`;
+          }
+          return `<div class="host-avatar" style="background:${p.hex}22;color:${p.hex};border:3px solid ${p.hex};box-shadow:0 0 30px ${p.hex}66;width:${size}px;height:${size}px;display:flex;align-items:center;justify-content:center;font-family:'Cinzel Decorative',serif;font-size:${size / 2.8}px;border-radius:50%">${p.initial}</div>`;
+        }
+
+        const rotationItems = HOST_ROTATION.map((id, idx) => {
+          const p = gp(id);
+          const isLast = id === lastHost;
+          const isNext = id === nextId;
+          const cls =
+            (isLast ? "rotation-last " : "") + (isNext ? "rotation-next" : "");
+          return `<div class="rotation-slot ${cls}">
+            <div class="rotation-pos">${idx + 1}</div>
+            ${hostAvatarHTML(p, 56)}
+            <div class="rotation-name" style="color:${p?.hex || "var(--text2)"}">${p?.name || id}</div>
+            ${isLast ? `<div class="rotation-badge">JUST HOSTED</div>` : ""}
+            ${isNext ? `<div class="rotation-badge rotation-next-badge">UP NEXT</div>` : ""}
+          </div>`;
+        }).join('<div class="rotation-arrow">→</div>');
+
+        const dropdownOptions = HOST_ROTATION.map((id) => {
+          const p = gp(id);
+          return `<option value="${id}" ${id === lastHost ? "selected" : ""}>${p?.name || id}</option>`;
+        }).join("");
+
+        el.innerHTML = `
+          <div class="section-label">🏠 Who's Hosting</div>
+          <div class="host-feature-row">
+            <div class="host-card host-next-card" style="--pc-color:${nextHostPlayer?.hex || "var(--gold)"}">
+              <div class="host-card-label">UP NEXT 🎲</div>
+              ${hostAvatarHTML(nextHostPlayer, 110)}
+              <div class="host-card-name" style="color:${nextHostPlayer?.hex || "var(--gold)"}">${nextHostPlayer?.name || "—"}</div>
+              <div class="host-card-sub">${lastHost ? "This week" : "First in rotation"}</div>
+            </div>
+            <div class="host-card host-last-card" style="--pc-color:${lastHostPlayer?.hex || "var(--text3)"}">
+              <div class="host-card-label">JUST HOSTED</div>
+              ${hostAvatarHTML(lastHostPlayer, 90)}
+              <div class="host-card-name" style="color:${lastHostPlayer?.hex || "var(--text3)"}">${lastHostPlayer?.name || "Not set yet"}</div>
+              <div class="host-card-sub">${lastHostDate ? fmtDate(lastHostDate) : "—"}</div>
+            </div>
+          </div>
+
+          <button class="log-cta host-mark-btn" onclick="markHosted()" style="margin-top:24px">
+            <span class="log-cta-icon">✅</span>
+            <span class="log-cta-text">Mark ${nextHostPlayer?.name || "Next"} as Hosted</span>
+            <span class="log-cta-arrow">→</span>
+          </button>
+
+          <div class="section-label" style="margin-top:36px">🔁 Rotation Order</div>
+          <div class="card">
+            <div class="rotation-row">${rotationItems}</div>
+            <div style="text-align:center;margin-top:14px;font-family:'Lora',serif;font-size:0.7rem;color:var(--text3);font-style:italic">
+              Loops back to ${gp(HOST_ROTATION[0])?.name || HOST_ROTATION[0]} after Parker hosts.
+            </div>
+          </div>
+
+          <div class="section-label" style="margin-top:36px">⚙️ Manual Override</div>
+          <div class="card">
+            <div class="ck-eyebrow" style="margin-bottom:10px">If we missed a week or messed up the order, set who hosted last manually.</div>
+            <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+              <select id="last-host-select" class="form-input" style="flex:1;min-width:160px">
+                <option value="">— Choose who hosted last —</option>
+                ${dropdownOptions}
+              </select>
+              <button class="btn-save" onclick="setLastHostManual()">Update</button>
+            </div>
+          </div>
+        `;
+      }
+
       /* ─── LOG GAME ─── */
       function renderLog() {
         const el = document.getElementById("tab-log");
@@ -3077,6 +3433,18 @@
               render();
             },
           )
+          .on(
+            "postgres_changes",
+            { event: "*", schema: "public", table: "host_rotation" },
+            async () => {
+              if (_suppressNextRealtime) {
+                _suppressNextRealtime = false;
+                return;
+              }
+              await pullHostState();
+              render();
+            },
+          )
           .subscribe();
 
         // SNAPSHOT localStorage BEFORE pulling (pull overwrites localStorage)
@@ -3088,6 +3456,9 @@
         // Initial pull
         const ok = await pullFromSupabase();
         if (!ok) return;
+
+        // Pull host state (gracefully ignores if table doesn't exist yet)
+        await pullHostState();
 
         // Migration: push any local-only games into Supabase
         const remoteIds = new Set(games.map((g) => g.id));
@@ -3111,10 +3482,12 @@
         else if (active === "s6") renderS6();
         else if (active === "champions") renderChampions();
         else if (active === "history") renderHistory();
+        else if (active === "hosts") renderHosts();
         else if (active === "log") renderLog();
       }
 
       load();
+      loadHost();
       render();
       initSupabase();
     </script>
