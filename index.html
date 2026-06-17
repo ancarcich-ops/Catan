@@ -2201,10 +2201,10 @@
             if (d.days === 0) {
               drStr = "Today!";
               drCls = "drought-ok";
-            } else if (d.days <= 14) {
+            } else if (d.days <= 30) {
               drStr = d.days + "d ago";
               drCls = "drought-ok";
-            } else if (d.days <= 60) {
+            } else if (d.days <= 90) {
               drStr = d.days + "d ago";
               drCls = "drought-med";
             } else {
@@ -2363,9 +2363,9 @@
               lw = fmtDate(d.lastWin);
               dsv = d.days === 0 ? "Today!" : d.days + "d";
               cls =
-                d.days >= 60
+                d.days > 90
                   ? "drought-hot"
-                  : d.days <= 14
+                  : d.days <= 30
                     ? "drought-ok"
                     : "drought-med";
               gsv = d.gamesSince > 0 ? `${d.gamesSince}` : "—";
