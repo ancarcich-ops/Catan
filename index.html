@@ -1737,6 +1737,46 @@
       }
 
       /* ═══════════════════════════════════════════
+         DUPLICATE DETECTOR — History tab warnings
+         ═══════════════════════════════════════════ */
+      .dupe-banner {
+        background: rgba(232, 122, 90, 0.1);
+        border: 1px solid rgba(232, 122, 90, 0.35);
+        border-left: 3px solid #e87a5a;
+        color: #f0c4a8;
+        padding: 12px 16px;
+        border-radius: 6px;
+        font-family: "Lora", serif;
+        font-size: 0.85rem;
+        line-height: 1.4;
+        margin: 12px 0;
+      }
+      .dupe-banner strong {
+        color: #e87a5a;
+        font-weight: 700;
+      }
+      .dupe-badge {
+        display: inline-block;
+        margin-left: 8px;
+        padding: 2px 6px;
+        background: rgba(232, 122, 90, 0.18);
+        border: 1px solid rgba(232, 122, 90, 0.4);
+        border-radius: 3px;
+        font-family: "Cinzel", serif;
+        font-size: 0.55rem;
+        letter-spacing: 0.08em;
+        color: #e87a5a;
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+      .row-dupe {
+        background: rgba(232, 122, 90, 0.05);
+      }
+      .row-dupe:hover {
+        background: rgba(232, 122, 90, 0.1);
+      }
+
+      /* ═══════════════════════════════════════════
          HOSTS TAB — Up Next / Just Hosted / Rotation
          ═══════════════════════════════════════════ */
       .host-feature-row {
@@ -2685,18 +2725,49 @@
       }
 
       /* ─── HISTORY ─── */
+      // Detect possible duplicates: same winner + same set of players + dates within 3 days
+      function getPotentialDuplicates() {
+        const dupes = new Set();
+        for (let i = 0; i < games.length; i++) {
+          for (let j = i + 1; j < games.length; j++) {
+            const a = games[i],
+              b = games[j];
+            if (!a.winner || a.winner !== b.winner) continue;
+            const daysApart = Math.abs(
+              (new Date(a.date + "T12:00:00") -
+                new Date(b.date + "T12:00:00")) /
+                86400000,
+            );
+            if (daysApart > 3) continue;
+            const aP = new Set(a.players || []);
+            const bP = new Set(b.players || []);
+            if (aP.size !== bP.size || aP.size === 0) continue;
+            if ([...aP].every((p) => bP.has(p))) {
+              dupes.add(a.id);
+              dupes.add(b.id);
+            }
+          }
+        }
+        return dupes;
+      }
+
       function renderHistory() {
         const el = document.getElementById("tab-history");
         const sorted = [...games].sort(
           (a, b) => new Date(b.date) - new Date(a.date),
         );
+        const dupSet = getPotentialDuplicates();
 
         const rows = sorted
           .map((g) => {
             const p = gp(g.winner);
             const sp = g.winner && g.startPositions?.[g.winner];
-            return `<tr>
-      <td style="color:var(--text3)">${fmtDate(g.date)}</td>
+            const isDupe = dupSet.has(g.id);
+            const dupeBadge = isDupe
+              ? `<span class="dupe-badge" title="Same winner + same players as another game within 3 days">⚠ Possible dup</span>`
+              : "";
+            return `<tr class="${isDupe ? "row-dupe" : ""}">
+      <td style="color:var(--text3)">${fmtDate(g.date)}${isDupe ? ` ${dupeBadge}` : ""}</td>
       <td><span class="season-badge">S${g.season}</span></td>
       <td><span style="font-family:'Cinzel',serif;font-size:.78rem;color:${p ? (p.fillIn ? "var(--text2)" : p.hex) : "var(--text2)"}">
         ${p ? `<span class="dot dot-glow${p.fillIn ? " dot-fi" : ""}" style="${p.fillIn ? "background:var(--fi-grad)" : "background:" + p.hex + ";color:" + p.hex};margin-right:5px"></span>` : ""}${p ? p.name : g.winner || "—"}
@@ -2719,8 +2790,14 @@
           })
           .join("");
 
+        const dupeBanner =
+          dupSet.size > 0
+            ? `<div class="dupe-banner">⚠ <strong>${dupSet.size}</strong> game${dupSet.size !== 1 ? "s" : ""} flagged as possible duplicates — same winner + same players + dates within 3 days. Check the ⚠ badges below and delete or edit as needed.</div>`
+            : "";
+
         el.innerHTML = `
     <div class="section-label">Full Game Log</div>
+    ${dupeBanner}
     <div class="card" style="padding:0;overflow:hidden;overflow-x:auto">
       <table class="htable">
         <thead><tr><th>Date</th><th>Season</th><th>Winner</th><th>Pick</th><th>Players</th><th>Notes</th><th></th></tr></thead>
@@ -3205,14 +3282,32 @@
         render();
       }
 
-      function deleteGame(gameId) {
+      async function deleteGame(gameId) {
         if (!confirm("Delete this game? This cannot be undone.")) return;
+        const doomed = games.find((x) => x.id === gameId);
+        if (!doomed) return;
+
+        // Snapshot for rollback if Supabase delete fails
+        const snapshot = [...games];
+
+        // Optimistic local delete + UI update
         games = games.filter((x) => x.id !== gameId);
         save();
-        deleteGameRemote(gameId);
         closeEdit();
-        showToast("🗑 Game deleted.");
         render();
+        showToast("🗑 Deleting…");
+
+        // Attempt Supabase delete
+        const err = await deleteGameRemote(gameId);
+        if (err) {
+          // Sync failed — restore local state so UI matches Supabase
+          games = snapshot;
+          save();
+          render();
+          showToast("⚠ Delete didn't sync — game restored. Check connection.");
+        } else {
+          showToast("✅ Game deleted");
+        }
       }
 
       /* ─── TABS ─── */
@@ -3400,16 +3495,17 @@
       }
 
       async function deleteGameRemote(id) {
-        if (!sb) return;
+        if (!sb) return null; // No cloud sync — treat local delete as authoritative
         setSyncStatus("syncing");
         _suppressNextRealtime = true;
         const { error } = await sb.from("games").delete().eq("id", id);
         if (error) {
           console.warn("Supabase delete failed:", error);
           setSyncStatus("offline");
-        } else {
-          setSyncStatus("synced");
+          return error;
         }
+        setSyncStatus("synced");
+        return null;
       }
 
       async function initSupabase() {
